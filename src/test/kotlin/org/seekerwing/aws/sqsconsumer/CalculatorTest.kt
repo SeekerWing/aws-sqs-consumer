@@ -14,5 +14,4 @@ internal class CalculatorTest {
         assertEquals(7, calculator.add(-5, 12))
         assertEquals(-7, calculator.add(5, -12))
     }
-
 }

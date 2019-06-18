@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 
 buildscript {
     repositories {
@@ -10,6 +9,7 @@ buildscript {
 plugins {
     kotlin("jvm") version "1.3.21"
     id("io.gitlab.arturbosch.detekt") version "1.0.0-RC15"
+    id("org.jlleitschuh.gradle.ktlint") version "8.1.0"
 }
 
 group = "org.seekerwing"
@@ -37,5 +37,5 @@ tasks.withType<KotlinCompile> {
 }
 
 detekt {
-    config = files("config/detekt.yml")  
+    config = files("config/detekt.yml")
 }
