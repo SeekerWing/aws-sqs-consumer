@@ -78,10 +78,9 @@ exceptions:
     active: true
   TooGenericExceptionCaught:
     active: true
-    exceptions:
+    exceptionNames:
       - ArrayIndexOutOfBoundsException
       - Error
-      - Exception
       - IllegalMonitorStateException
       - IndexOutOfBoundsException
       - InterruptedException

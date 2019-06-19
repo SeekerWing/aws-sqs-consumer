@@ -1,30 +1,34 @@
-package org.seekerwing.aws.sqsconsumer.receiver
+package org.seekerwing.aws.sqsconsumer.sqs
 
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.seekerwing.aws.sqsconsumer.MessageProcessor
+import org.seekerwing.aws.sqsconsumer.configuration.MessageFetcherConfiguration
 import org.seekerwing.aws.sqsconsumer.model.Queue
+import org.seekerwing.aws.sqsconsumer.model.QueueContext
 import software.amazon.awssdk.services.sqs.SqsAsyncClient
 import software.amazon.awssdk.services.sqs.model.Message
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse
 import java.util.concurrent.CompletableFuture
 
-internal class MessageReceiverTest {
-
-    val messageReceiver: MessageReceiver = MessageReceiver()
+internal class MessageFetcherTest {
 
     val sqsAsyncClient: SqsAsyncClient = mock()
 
     @Test
-    fun receiveMessage() = runBlocking<Unit> {
+    @DisplayName("validate that fetchMessage invokes SQS receiveMessage")
+    fun fetchMessage() = runBlockingTest {
         val receiveMessageRequest: ReceiveMessageRequest = ReceiveMessageRequest
             .builder()
             .queueUrl("QUEUE_URL")
-            .maxNumberOfMessages(MessageReceiver.MAXIMUM_NUMBER_OF_MESSAGES)
-            .waitTimeSeconds(MessageReceiver.WAIT_TIME_SECONDS)
+            .maxNumberOfMessages(10)
+            .waitTimeSeconds(20)
+            .visibilityTimeout(30)
             .build()
         val message: Message = Message
             .builder()
@@ -37,7 +41,13 @@ internal class MessageReceiverTest {
                 .messages(message)
                 .build()))
 
-        val receiveMessage = messageReceiver.receiveMessage(Queue(sqsAsyncClient, "QUEUE_URL"))
+        val messageProcessor = object : MessageProcessor {
+            override suspend fun processMessage(message: Message) {
+                println("$message")
+            }
+        }
+        val queue = Queue(sqsAsyncClient, "QUEUE_URL", QueueContext(messageProcessor))
+        val receiveMessage = queue.fetchMessage(MessageFetcherConfiguration())
         assertEquals(listOf(message), receiveMessage)
     }
 }
