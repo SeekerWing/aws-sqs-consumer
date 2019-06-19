@@ -1,0 +1,8 @@
+language: kotlin
+jdk:
+  - oraclejdk8
+before_install:
+  - chmod +x gradlew
+  - chmod +x gradle/wrapper/gradle-wrapper.jar
+script:
+  - ./gradlew clean build test
