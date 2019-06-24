@@ -6,7 +6,8 @@ import org.seekerwing.aws.sqsconsumer.model.Queue
  * [MessageProviderConfiguration] provides configuration options for
  * [MessageProvider][org.seekerwing.aws.sqsconsumer.messageprovider.MessageProvider].
  *
- * [queue] defines [Queue] from which the [MessageProvider][org.seekerwing.aws.sqsconsumer.messageprovider.MessageProvider]
+ * [queue] defines [Queue] from which the [MessageProvider]
+ * [org.seekerwing.aws.sqsconsumer.messageprovider.MessageProvider]
  * will provide messages to the [MessageProcessor][org.seekerwing.aws.sqsconsumer.MessageProcessor].
  *
  * [messageFetcherConfiguration] defines [MessageProviderConfiguration] to be provide configuration values for
