@@ -34,5 +34,6 @@ internal open class MessageConsumer(private val configuration: ConsumerConfigura
             }
         }
     }
+
     companion object : Logging
 }

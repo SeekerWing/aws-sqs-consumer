@@ -3,7 +3,7 @@ package org.seekerwing.aws.sqsconsumer
 import kotlinx.coroutines.Job
 
 /**
- * [QueueConsumer] is the external interface for the users of this library. Users are expected to use implementations
+ * [QueueConsumer] is the external interface for the users of this library. Users are expected to use implementations of
  * [org.seekerwing.aws.sqsconsumer.builder.QueueConsumerBuilder] to build a [QueueConsumer] and then invoke
  * [QueueConsumer.start] to start the process of polling [org.seekerwing.aws.sqsconsumer.model.Queue]. This will trigger
  * the process of polling the [org.seekerwing.aws.sqsconsumer.model.Queue] for messages and invoke the provided
