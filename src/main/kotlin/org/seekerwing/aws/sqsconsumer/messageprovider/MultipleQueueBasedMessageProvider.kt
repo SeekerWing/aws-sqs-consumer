@@ -10,7 +10,7 @@ internal class MultipleQueueBasedMessageProvider(
     private val configurations: MessageProviderConfigurations
 ) : MessageProvider {
 
-    override fun provideMessage(coroutineScope: CoroutineScope) = coroutineScope.produce<MessageEnvelope> {
+    override fun provideMessages(coroutineScope: CoroutineScope) = coroutineScope.produce<MessageEnvelope> {
         configurations.forEach { configuration ->
             repeat(configuration.parallelism) {
                 launchMessageFetcher(configuration, channel)

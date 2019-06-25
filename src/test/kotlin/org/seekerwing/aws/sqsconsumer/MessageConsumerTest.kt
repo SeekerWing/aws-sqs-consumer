@@ -9,7 +9,6 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Test
 
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.seekerwing.aws.sqsconsumer.configuration.ConsumerConfiguration
 import org.seekerwing.aws.sqsconsumer.model.MessageEnvelope

@@ -19,7 +19,7 @@ import org.seekerwing.aws.sqsconsumer.sqs.launchMessageFetcher
 internal class SingleQueueBasedMessageProviderTest {
 
     @Test
-    @DisplayName("validate that provideMessage invokes launchMessageFetcher N (parallelism) times")
+    @DisplayName("validate that provideMessages invokes launchMessageFetcher N (parallelism) times")
     fun provideMessage() = runBlockingTest {
         val queue: Queue = mockk()
         val fetcherConfiguration = MessageFetcherConfiguration()
@@ -32,7 +32,7 @@ internal class SingleQueueBasedMessageProviderTest {
         } returns Job()
 
         val singleQueueBasedMessageProvider = SingleQueueBasedMessageProvider(providerConfiguration)
-        singleQueueBasedMessageProvider.provideMessage(this)
+        singleQueueBasedMessageProvider.provideMessages(this)
 
         coVerify(exactly = 2) {
             any<CoroutineScope>().launchMessageFetcher(eq(providerConfiguration), any<SendChannel<MessageEnvelope>>())

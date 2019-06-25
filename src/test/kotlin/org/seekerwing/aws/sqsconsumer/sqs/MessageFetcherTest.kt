@@ -1,6 +1,8 @@
 package org.seekerwing.aws.sqsconsumer.sqs
 
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -48,6 +50,8 @@ internal class MessageFetcherTest {
         }
         val queue = Queue(sqsAsyncClient, "QUEUE_URL", QueueContext(messageProcessor))
         val receiveMessage = queue.fetchMessage(MessageFetcherConfiguration())
+
         assertEquals(listOf(message), receiveMessage)
+        verify(sqsAsyncClient, times(1)).receiveMessage(receiveMessageRequest)
     }
 }

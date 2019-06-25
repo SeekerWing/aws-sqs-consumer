@@ -9,9 +9,10 @@ import org.seekerwing.aws.sqsconsumer.messageprovider.SingleQueueBasedMessagePro
 
 /**
  * Implementation of [QueueConsumerBuilder] to be used by user of the library to build an instance of [QueueConsumer]
- * that is configured to poll a single queue and invoke the [org.seekerwing.aws.sqsconsumer.MessageProcessor]
- * implemented by the user of the library. The builder needs [MessageProviderConfiguration] to instantiate
- * [QueueConsumer] and can optionally accept [ConsumerConfiguration].
+ * that is configured to poll a single queue and invoke the
+ * [MessageProcessor][org.seekerwing.aws.sqsconsumer.MessageProcessor] implemented by the user of the library. The
+ * builder needs [MessageProviderConfiguration] to instantiate [QueueConsumer] and can optionally accept
+ * [ConsumerConfiguration].
  */
 class SingleQueueConsumerBuilder(
     private val messageProviderConfiguration: MessageProviderConfiguration,

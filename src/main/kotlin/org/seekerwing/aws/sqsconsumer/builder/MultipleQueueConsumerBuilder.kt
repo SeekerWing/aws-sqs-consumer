@@ -9,9 +9,10 @@ import org.seekerwing.aws.sqsconsumer.messageprovider.MultipleQueueBasedMessageP
 
 /**
  * Implementation of [QueueConsumerBuilder] to be used by user of the library to build an instance of [QueueConsumer]
- * that is configured to poll multiple queues and invoke the [org.seekerwing.aws.sqsconsumer.MessageProcessor] defined
- * for each of the queues as implemented by the user of the library. The builder needs [MessageProviderConfigurations]
- * to instantiate [QueueConsumer] and can optionally accept [ConsumerConfiguration].
+ * that is configured to poll multiple queues and invoke the
+ * [MessageProcessor][org.seekerwing.aws.sqsconsumer.MessageProcessor] defined for each of the queues as implemented by
+ * the user of the library. The builder needs [MessageProviderConfigurations] to instantiate [QueueConsumer] and can
+ * optionally accept [ConsumerConfiguration].
  */
 class MultipleQueueConsumerBuilder(
     private val messageProviderConfigurations: MessageProviderConfigurations,

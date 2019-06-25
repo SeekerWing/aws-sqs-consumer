@@ -1,6 +1,8 @@
 package org.seekerwing.aws.sqsconsumer.sqs
 
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -19,7 +21,7 @@ internal class MessageDeleterTest {
     val sqsAsyncClient: SqsAsyncClient = mock()
 
     @Test
-    @DisplayName("validate that fetchMessage invokes SQS deleteMessage")
+    @DisplayName("validate that deleteMessage invokes SQS deleteMessage")
     fun deleteMessage() = runBlockingTest {
         val deleteMessageRequest: DeleteMessageRequest = DeleteMessageRequest
             .builder()
@@ -46,5 +48,7 @@ internal class MessageDeleterTest {
         }
         val queue = Queue(sqsAsyncClient, "QUEUE_URL", QueueContext(messageProcessor))
         queue.deleteMessage(message)
+
+        verify(sqsAsyncClient, times(1)).deleteMessage(deleteMessageRequest)
     }
 }

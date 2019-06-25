@@ -19,7 +19,7 @@ internal class SqsQueueConsumer(private val provider: MessageProvider, private v
         get() = Dispatchers.IO + supervisorJob
 
     override fun start() = launch {
-        val messageChannel = provider.provideMessage(CoroutineScope(coroutineContext))
+        val messageChannel = provider.provideMessages(CoroutineScope(coroutineContext))
         consumer.launchConsumer(CoroutineScope(coroutineContext), messageChannel)
     }
 

@@ -6,5 +6,5 @@ import org.seekerwing.aws.sqsconsumer.model.MessageEnvelope
 
 internal interface MessageProvider {
 
-    fun provideMessage(coroutineScope: CoroutineScope): ReceiveChannel<MessageEnvelope>
+    fun provideMessages(coroutineScope: CoroutineScope): ReceiveChannel<MessageEnvelope>
 }

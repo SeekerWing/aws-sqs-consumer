@@ -18,16 +18,16 @@ internal class SqsQueueConsumerTest {
     val messageProvider: MessageProvider = mockk()
 
     @Test
-    @DisplayName("validate that start invokes MessageProvider.provideMessage and MessageConsumer.launchConsumer")
+    @DisplayName("validate that start invokes MessageProvider.provideMessages and MessageConsumer.launchConsumer")
     fun start() = runBlockingTest {
         val sqsQueueConsumer = SqsQueueConsumer(messageProvider, messageConsumer)
 
-        coEvery { messageProvider.provideMessage(any<CoroutineScope>()) } returns receiveChannel
+        coEvery { messageProvider.provideMessages(any<CoroutineScope>()) } returns receiveChannel
         coEvery { messageConsumer.launchConsumer(any<CoroutineScope>(), eq(receiveChannel)) } returns Unit
 
         sqsQueueConsumer.start()
 
-        coVerify(exactly = 1) { messageProvider.provideMessage(any<CoroutineScope>()) }
+        coVerify(exactly = 1) { messageProvider.provideMessages(any<CoroutineScope>()) }
         coVerify(exactly = 1) { messageConsumer.launchConsumer(any<CoroutineScope>(), eq(receiveChannel)) }
     }
 }

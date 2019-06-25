@@ -18,7 +18,6 @@ internal fun CoroutineScope.launchMessageFetcher(
             configuration.queue
                 .fetchMessage(configuration.messageFetcherConfiguration)
                 .forEach { message: Message ->
-                    println(message)
                     channel.send(MessageEnvelope(message, configuration.queue))
                 }
         } catch (e: Exception) {

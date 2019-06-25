@@ -10,7 +10,6 @@ import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Test
 
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.seekerwing.aws.sqsconsumer.configuration.MessageFetcherConfiguration
 import org.seekerwing.aws.sqsconsumer.configuration.MessageProviderConfiguration
@@ -21,7 +20,7 @@ import org.seekerwing.aws.sqsconsumer.sqs.launchMessageFetcher
 internal class MultipleQueueBasedMessageProviderTest {
 
     @Test
-    @DisplayName("validate that provideMessage invokes launchMessageFetcher for each queue in MessageProviderConfiguration N (parallelism) times")
+    @DisplayName("validate that provideMessages invokes launchMessageFetcher for each queue in MessageProviderConfiguration N (parallelism) times")
     fun provideMessage() = runBlockingTest {
         val fetcherConfiguration = MessageFetcherConfiguration()
         val queue1: Queue = mockk()
@@ -45,7 +44,7 @@ internal class MultipleQueueBasedMessageProviderTest {
         } returns Job()
 
         val multipleQueueBasedMessageProvider = MultipleQueueBasedMessageProvider(providerConfigurations)
-        multipleQueueBasedMessageProvider.provideMessage(this)
+        multipleQueueBasedMessageProvider.provideMessages(this)
 
         coVerify(exactly = 2) {
             any<CoroutineScope>().launchMessageFetcher(eq(providerConfiguration1), any<SendChannel<MessageEnvelope>>())

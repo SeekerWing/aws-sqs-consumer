@@ -10,7 +10,7 @@ internal class SingleQueueBasedMessageProvider(
     private val configuration: MessageProviderConfiguration
 ) : MessageProvider {
 
-    override fun provideMessage(coroutineScope: CoroutineScope) = coroutineScope.produce<MessageEnvelope> {
+    override fun provideMessages(coroutineScope: CoroutineScope) = coroutineScope.produce<MessageEnvelope> {
         repeat(configuration.parallelism) {
             launchMessageFetcher(configuration, channel)
         }
