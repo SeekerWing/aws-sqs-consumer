@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.bundling.Jar
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -7,16 +8,18 @@ buildscript {
     }
 }
 
+group = "io.github.seekerwing"
+version = "1.0-SNAPSHOT"
+
 plugins {
     kotlin("jvm") version "1.3.31"
     id("io.gitlab.arturbosch.detekt") version "1.0.0-RC15"
     id("org.jlleitschuh.gradle.ktlint") version "8.1.0"
     id("org.jetbrains.dokka") version "0.9.18"
     jacoco
+    `maven-publish`
+    signing
 }
-
-group = "org.seekerwing"
-version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -98,4 +101,69 @@ tasks {
         dependsOn(named<Task>("dokka"))
         dependsOn(named<Task>("javadoc"))
     }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            artifactId = "aws-sqs-consumer"
+
+            val sourcesJar by tasks.creating(Jar::class) {
+                this.classifier = "sources"
+                from(sourceSets["main"].allSource)
+            }
+
+            val javadocJar by tasks.creating(Jar::class) {
+                this.classifier = "javadoc"
+                from("$buildDir/reports/javadoc")
+            }
+
+            from(components["java"])
+            artifact(sourcesJar)
+            artifact(javadocJar)
+
+            pom {
+                name.set("aws-sqs-consumer")
+                description.set("The AWS SQS Consumer reduces time to launch a SQS Message Consumer by empowering developers to focus on business logic of processing the message.")
+                url.set("https://seekerwing.github.io/aws-sqs-consumer/")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("baruray")
+                        name.set("Barun Ray")
+                        email.set("ray.barunray@gmail.com")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:git://github.com/SeekerWing/aws-sqs-consumer.git")
+                    developerConnection.set("scm:git:ssh://github.com/SeekerWing/aws-sqs-consumer.git")
+                    url.set("https://github.com/SeekerWing/aws-sqs-consumer")
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            // https://issues.sonatype.org/browse/OSSRH-50005
+            val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
+            val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots")
+            url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+
+            val ossrhUsername: String by project
+            val ossrhPassword: String by project
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+        }
+    }
+}
+
+signing {
+    sign(publishing.publications["mavenJava"])
 }

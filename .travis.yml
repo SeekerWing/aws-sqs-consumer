@@ -1,23 +1,46 @@
 language: kotlin
 
 jdk:
-  - oraclejdk8
+- oraclejdk8
 
-before_install:
-  - chmod +x gradlew
-  - chmod +x gradle/wrapper/gradle-wrapper.jar
-
-script:
-  - ./gradlew clean build test
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+stages:
+  - name: build
+  - name: deploy
+    if: branch = master AND type == pull_request
 
 before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
 cache:
   directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+
+jobs:
+  include:
+    - stage: build
+      script:
+        - ./gradlew clean build test
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
+      before_install:
+        - chmod +x gradlew
+        - chmod +x gradle/wrapper/gradle-wrapper.jar
+    - stage: deploy
+      script:
+        - ./gradlew clean build test publish
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
+      before_install:
+        - openssl aes-256-cbc -K $encrypted_959d8f6be2a5_key -iv $encrypted_959d8f6be2a5_iv -in secret.gpg.enc -out $SIGNING_FILE -d
+        - chmod +x gradlew
+        - chmod +x gradle/wrapper/gradle-wrapper.jar
+
+env:
+  global:
+  - secure: XjAHmwfwUwEMO1MacnB+Q1Js11GWMILklEjWFomsB1u3PYhJOajR66Pxj/uExRy6adC2Gvh9I4dSY5/r+C16TAUWNawulYQYpLKy0sEwP/yyEyzVCVsiFMwuNonUZueSUwDhmPKsujYKMJHuQelnDGG+SY3TpA+DiIBlY5uQObpBI9MZ9vieSykRdZ4LuRmGaeHp1R0PxOVa9Oo2ViNlh6AF0M2zjHb+MG45KwbrklXkViXlcFtmb0Wp26HlDSm0JYdsmsoA4izEvAQnp/1N5s5ksCGRHPCStruU1P64KzCz6pqD5ksOS2GejTUwCne9GvtFYN4+2AsOQ8V5H5MkxZAd8I38M7AyuEFwHT1tDSZ7i3yf9OOAeL2XaM3ePbZ2t5dLce2YPIWmMspFcmaEUjUZN/lJJwvbtnzm4Uozi7JEdzXuKOpnHmjBjNedLx8O27+u3BcJvwNduDexpGXt60X8fLxJers+oDPtv5H526bK0rGp0048WMTWDXsg4zknQs36RsfotWzybw/Z2oFVRWhpiBcrOgnd/yAiuOjUGf+4Q4CWdSjnPU8j+aujEsM/hRwGR75f4X3Hk+BHfHZsGGdFOh0eCYFx84OAJUn959hEsLrQhXoPxtXnJdvsRimECpY0jEyL1QuS8d7t4b+wwVSsAIgLl5R5z2l1M3G65Ac=
+  - secure: UGKwVQ2pFAIz4ApuU8+junbOpqx/XlJ7zHMh1DjZXeSWYnyEBvDk3uPGbqYBW4V1ZbBEsTIDbJJ3X/Q1G8jhchthChdFnK4a7O6kXr3hvVnk7MkHk3WGUqRjAD76d96tm9MP3Gt1CiqcK7H/yrK2WjOh4rJCTFDjH/Qgx54cmb+JXrSnmjcZggIRTW5Icai/9qGW23MR9OeWneQyqsRe9woPnXGm+NaO9uLEYUInaUL/qlkHDZ8izXFnKXl62LvlaC2PziaguWu0ZlDsCNnuQw4tMFiRbTL8OrjGlAkIFvHwNoEYKcRpNhORN/kreWTn1KSP/CVaH8i6SGzL90fIRyFJ9t4bI4esJH7ifdUXviWCb+xnbr+k4crWLiye+Y/qeF/0C33MYWV+HnbKBr1dzqcUtjwnIEEVo2Zeg4/3SUxK04p44mUvM3tbJqz6ALap4FrdPOYo77giOfD+rZV/XW6Tz1KMSffcbYqeZ1PYXOCgo9j58S9kTTc6fvd7HlBBo2Cm2eQVi9gIySKjLfZdW7vl/xUKVUcwu4ak3Hgt0zybYr0ZJF/KTvNah+XkSrCKu+BSBmrP4qJEELk1nV1BPcgx6npKgzvPbNmGJjlzNoo6S1BghbQ7JIOpPfUqli9fCgOqQx6DMRAD8UxqB0lTFCjQVemsNeKoWenJkZnZ5Es=
+  - secure: LrDp8jOdYPEty+pg+MfZj+lAhl0UNIZeTuI0s6u6AxMUZoP4C3NfYqL69tecymZCx6yTfxDikpnEbWT8DmukkaeI6rmVdJ26+qTssopsK9KDyD1nBcPm8X7v87zUF9hAljQZwrddmVTuMsr7+JVOV9ySG6nNQAF9VkfJtzdINOx3vx0STavKtZ5ib9fpXsz0kMJN3DJ0oy0LypqW6m7rUYyPPpDL9UYyNrkKimNJOSywKt1na+Kt1YHybBMX/8H0lKKTuvO3tOq1Hfc699b1q7a2+k6kQbaap9fjnmYVNCXl6+YVwiOFWqEwafy/aV47lnQy50TgCqZFmDjK7NF6VniQDlQNxLuF8v0nTEBBgYUmtyyeIEKjNRFCIcTmflnUdt1oNxX5mjjvtT6ksLK5Z9ZOJ2ByCS9Aqs12qHFvHghHxU8rAIU3uSDyisTg3Qdm9Wox8jJteTncZm3Nmwnl5KwQyxeCcGzh2f2NkAfTnCzusvND4FFDnSi1W4VbMv54IyxSxX6nEBLeWFFcZEubZl/LkykvPJDf1qYJ3ZweJzD4OHlMyN+/amz2jRBSPyesrC5caprKWFWcVRicKeqAcMl8/SR0pEncyrhZHpNSnfBcGql/aFHj1QEsJZGJPry+vaDRwuEHT4WpuNo+sjjZSWKRfSZMv5sxpO6t8jzPY/w=
+  - secure: n+S1Ewy34aeDDvZbDNuN2HN1jz/Ge5vuDfXGsTotinprgabUwKUVCrrZ0T6hFcIDPbBgbPr/heWUN19QVZLeDLLHzikBQK4rNcrIpg/j2HkWcAEFYXYVmKoD2fMtBwEzNa0VD0minz4CEX1zjmld8UFaa9YJiJHCT00y36YzRrBiwoQCt3pLnADeLlTXOlosExTW4XzA9dxNOSXzXkG4lC1JDLrQxLEi94Yag1MW+DowDETeZ2C8xPu0xtEKPbZX/pHl5+GpOWu7tQpmsoO/RpSRBHmxrU+6zM6T7G92zHBuaaJvECPJppT5X+Lk9AbV41lcvcnv5wIJTfZCVBzNJAyvJCnSO/C1WMbfkc6XTTRR62ot2T/GT+454WDsjSaOlaL08CRs8q+2t/CgyF++9LaSjOjyYftslIH82xMH0VmkUQKSOA9YEQ4Hr3hMreo4+AiwGta74e0bSjWbiFpG3JIKSlGYo3+w5pSNpp1bLgVOgBTvbL2p7N3/mkT/MnSqdKQuwufuAjHY7sCWW/rwxc0z7jsuBy2rrNUOr2ViIJqQmPTJkbSbPTk132jpJ89+i+10v6woHDJYTK4wecbSHhS0y89SpeVqwpO0nQya1n4sj6KhJpFL3J1bEBaaYfPOmboEf1MtImPNdkF1M9YpvKtwmO7frOBDbu7afNGP9bQ=
+  - secure: JH3kxbPIMsSh+2iV45evvYx7c7ZXZDF119NzZfhmY7k5/SbOOnHzzExJgUEneiVHOol8zh/m7UvZFmpplprbyQJmBOStOGfqFEMV6Qpy5C4WrhY5hRMForxazbjwLwwdwJ+YieMKa3AEl+0JQSaNDy35npS5BEO/2Cer+Ps+vzF/s5v/tZ4kcr5WxlgFVdm4PCls0B5+OsaCGDORmxyz9c6Ejgob47zM3uzB7RE1GGSzdLaLYMINp8e27a0UtpvYbkKleBGWD6EPGNCRDcp5aKLGBQfBoPXoLpSfMPUY+gmAgGdb3obK7oCcmeAmc0mwqbuA1JO+RjA0NjYeCRUrIjVfgGJUpnQ3G0wXp2Yhk9Rrj44fEvxFc+Dqz+YhaLF6w4A7B957z+ulsfLu6F9GLI8NOLlt/X97WSXCcESjlJGZzptUhv74nHvZYbJQIBS2R68PzjvOs0FAN88yYl6s5Ic7s2Qo2r1niBeJmSvUap6uA4GgJzhr5cATYGV5b1v7OxHtvfQ5RgPUO1lcejFFYzr1r+7OzpUEgsVrmM/+QkTFnjKXUHoNUNDOKcvLXa2lcrXtXD9n1IIiaz4ERIob5v366L+myCaHo9of937pg61UAJK3CizETsPEqggLepAUG2TjwMKZqu4hAd3t70HIKAlYmt4yOnfY4R8E0CJ3nG8=
