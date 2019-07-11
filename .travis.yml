@@ -4,7 +4,7 @@ jdk:
 stages:
 - name: build
 - name: deploy
-  if: branch = master AND type == pull_request
+  if: branch = master AND type != pull_request
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
