@@ -108,6 +108,8 @@ tasks {
 
 val ossrhUsername: String by project
 val ossrhPassword: String by project
+val mavenTask: String = "mavenJava"
+val projectName: String = "aws-sqs-consumer"
 
 nexusStaging {
     username = ossrhUsername
@@ -121,8 +123,8 @@ configure<NexusPublishExtension> {
 
 publishing {
     publications {
-        create<MavenPublication>("mavenJava") {
-            artifactId = "aws-sqs-consumer"
+        create<MavenPublication>(mavenTask) {
+            artifactId = projectName
 
             val sourcesJar by tasks.creating(Jar::class) {
                 this.classifier = "sources"
@@ -139,8 +141,9 @@ publishing {
             artifact(javadocJar)
 
             pom {
-                name.set("aws-sqs-consumer")
-                description.set("The AWS SQS Consumer reduces time to launch a SQS Message Consumer by empowering developers to focus on business logic of processing the message.")
+                name.set(projectName)
+                description.set("The AWS SQS Consumer reduces time to launch a SQS Message Consumer by empowering " +
+                        "developers to focus on business logic of processing the message.")
                 url.set("https://seekerwing.github.io/aws-sqs-consumer/")
                 licenses {
                     license {
@@ -179,5 +182,5 @@ publishing {
 }
 
 signing {
-    sign(publishing.publications["mavenJava"])
+    sign(publishing.publications[mavenTask])
 }
