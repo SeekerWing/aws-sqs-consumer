@@ -21,7 +21,7 @@ jobs:
   include:
   - stage: build
     script:
-    - "./gradlew clean build test"
+    - ./gradlew clean build test
     after_success:
     - bash <(curl -s https://codecov.io/bash)
     before_install:
@@ -29,12 +29,17 @@ jobs:
     - chmod +x gradle/wrapper/gradle-wrapper.jar
   - stage: deploy
     script:
-    - "./gradlew clean build test publish"
+    - ./gradlew clean build test publish
+      -Psigning.keyId="$GPG_KEY_ID"
+      -Psigning.password="$GPG_PASSPHRASE"
+      -Psigning.secretKeyRingFile="$TRAVIS_BUILD_DIR/secret.gpg"
+      -PossrhUsername="$SONATYPE_USERNAME"
+      -PossrhPassword="$SONATYPE_PASSWORD"
     after_success:
     - bash <(curl -s https://codecov.io/bash)
     before_install:
     - openssl aes-256-cbc -K $encrypted_959d8f6be2a5_key -iv $encrypted_959d8f6be2a5_iv
-      -in secret.gpg.enc -out $SIGNING_FILE -d
+      -in secret.gpg.enc -out secret.gpg -d
     - chmod +x gradlew
     - chmod +x gradle/wrapper/gradle-wrapper.jar
     env:
