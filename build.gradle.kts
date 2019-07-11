@@ -1,3 +1,4 @@
+import de.marcphilipp.gradle.nexus.NexusPublishExtension
 import org.gradle.api.tasks.bundling.Jar
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -19,6 +20,8 @@ plugins {
     jacoco
     `maven-publish`
     signing
+    id("io.codearte.nexus-staging") version "0.21.0"
+    id("de.marcphilipp.nexus-publish") version "0.2.0"
 }
 
 repositories {
@@ -103,6 +106,19 @@ tasks {
     }
 }
 
+val ossrhUsername: String by project
+val ossrhPassword: String by project
+
+nexusStaging {
+    username = ossrhUsername
+    password = ossrhPassword
+}
+
+configure<NexusPublishExtension> {
+    username.set(ossrhUsername)
+    password.set(ossrhPassword)
+}
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
@@ -154,8 +170,6 @@ publishing {
             val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots")
             url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
 
-            val ossrhUsername: String by project
-            val ossrhPassword: String by project
             credentials {
                 username = ossrhUsername
                 password = ossrhPassword
