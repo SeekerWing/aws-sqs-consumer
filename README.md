@@ -14,11 +14,11 @@
 The [AWS SQS Consumer](https://github.com/SeekerWing/aws-sqs-consumer) aims to reduce time to launch a SQS Message Consumer by empowering developers to focus on business logic of processing the message. 
 
 The "unique selling proposition" of [AWS SQS Consumer](https://github.com/SeekerWing/aws-sqs-consumer) are:
-*  support for priority based consumption of Messages across multiple Queues 
-*  asynchronous (truly non-blocking) implementation at it's core to maximize throughput and optimize resource utilization by leveraging [Asynchronous AWS SDK for Java 2.0](https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/basics-async.html) and [Kotlin > Coroutines > Channels](https://kotlinlang.org/docs/reference/coroutines/channels.html) 
-*  out of the box exception handling via [Dead-Letter Queues](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html)
-*  abstraction of complexity involved in invoking SQS APIs [ReceiveMessage](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ReceiveMessage.html) and [DeleteMessage](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_DeleteMessage.html)
-*  cost reduction via default behavior set to [Long Polling](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-long-polling.html)  
+*   support for priority based consumption of Messages across multiple Queues 
+*   asynchronous (truly non-blocking) implementation at it's core to maximize throughput and optimize resource utilization by leveraging [Asynchronous AWS SDK for Java 2.0](https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/basics-async.html) and [Kotlin > Coroutines > Channels](https://kotlinlang.org/docs/reference/coroutines/channels.html) 
+*   out of the box exception handling via [Dead-Letter Queues](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html)
+*   abstraction of complexity involved in invoking SQS APIs [ReceiveMessage](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ReceiveMessage.html) and [DeleteMessage](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_DeleteMessage.html)
+*   cost reduction via default behavior set to [Long Polling](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-long-polling.html)  
 
 ## Design
 
