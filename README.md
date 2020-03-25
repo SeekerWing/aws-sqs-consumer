@@ -1,6 +1,7 @@
 # aws-sqs-consumer
 
-[![Build Status](https://travis-ci.com/SeekerWing/aws-sqs-consumer.svg?branch=master)](https://travis-ci.com/SeekerWing/aws-sqs-consumer) 
+[![Build Status](https://travis-ci.com/SeekerWing/aws-sqs-consumer.svg?branch=master)](https://travis-ci.com/SeekerWing/aws-sqs-consumer)
+[![Download](https://api.bintray.com/packages/seekerwing/maven/aws-sqs-consumer/images/download.svg) ](https://bintray.com/seekerwing/maven/aws-sqs-consumer/_latestVersion) 
 [![Coverage Status](https://codecov.io/gh/SeekerWing/aws-sqs-consumer/branch/master/graph/badge.svg)](https://codecov.io/gh/SeekerWing/aws-sqs-consumer)
 [![Code Climate](https://codeclimate.com/github/SeekerWing/aws-sqs-consumer/badges/gpa.svg)](https://codeclimate.com/github/SeekerWing/aws-sqs-consumer)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4b683e64165f48a0a5283f5b26f6cab7)](https://www.codacy.com/app/ray-barunray/aws-sqs-consumer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SeekerWing/aws-sqs-consumer&amp;utm_campaign=Badge_Grade) 
