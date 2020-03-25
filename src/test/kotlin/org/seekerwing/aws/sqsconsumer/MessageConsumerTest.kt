@@ -7,9 +7,8 @@ import io.mockk.mockkStatic
 import kotlinx.coroutines.channels.ChannelIterator
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 import org.seekerwing.aws.sqsconsumer.configuration.ConsumerConfiguration
 import org.seekerwing.aws.sqsconsumer.model.MessageEnvelope
 import org.seekerwing.aws.sqsconsumer.model.Queue

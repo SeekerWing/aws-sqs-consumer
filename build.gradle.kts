@@ -13,10 +13,10 @@ group = "io.github.seekerwing"
 version = "1.0-SNAPSHOT"
 
 plugins {
-    kotlin("jvm") version "1.3.31"
-    id("io.gitlab.arturbosch.detekt") version "1.0.0-RC15"
-    id("org.jlleitschuh.gradle.ktlint") version "8.1.0"
-    id("org.jetbrains.dokka") version "0.9.18"
+    kotlin("jvm") version "1.3.71"
+    id("io.gitlab.arturbosch.detekt") version "1.7.0"
+    id("org.jlleitschuh.gradle.ktlint") version "9.2.0"
+    id("org.jetbrains.dokka") version "0.10.1"
     jacoco
     `maven-publish`
     signing
@@ -31,17 +31,17 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0-M1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.3.0-M1")
-    implementation("software.amazon.awssdk:sqs:2.5.64")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.3.5")
+    implementation("software.amazon.awssdk:sqs:2.11.0")
     implementation("org.apache.logging.log4j:log4j-api-kotlin:1.0.0")
-    implementation("org.apache.logging.log4j:log4j-api:2.11.2")
-    implementation("org.apache.logging.log4j:log4j-core:2.11.2")
+    implementation("org.apache.logging.log4j:log4j-api:2.13.1")
+    implementation("org.apache.logging.log4j:log4j-core:2.13.1")
 
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.0-M1")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.4.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.5")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.6.1")
     testImplementation("io.mockk:mockk:1.9.3")
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
 }
 
 tasks.withType<Test> {
@@ -81,11 +81,11 @@ tasks.withType<JacocoCoverageVerification> {
             }
             limit {
                 counter = "BRANCH"
-                minimum = "1.00".toBigDecimal()
+                minimum = "0.91".toBigDecimal()
             }
             limit {
                 counter = "COMPLEXITY"
-                minimum = "0.82".toBigDecimal()
+                minimum = "0.80".toBigDecimal()
             }
         }
     }

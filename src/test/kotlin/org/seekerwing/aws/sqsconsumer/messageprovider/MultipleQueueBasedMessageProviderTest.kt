@@ -8,9 +8,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 import org.seekerwing.aws.sqsconsumer.configuration.MessageFetcherConfiguration
 import org.seekerwing.aws.sqsconsumer.configuration.MessageProviderConfiguration
 import org.seekerwing.aws.sqsconsumer.model.MessageEnvelope

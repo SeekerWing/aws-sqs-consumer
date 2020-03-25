@@ -4,6 +4,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -18,7 +19,6 @@ import org.seekerwing.aws.sqsconsumer.configuration.MessageProviderConfiguration
 import org.seekerwing.aws.sqsconsumer.model.MessageEnvelope
 import org.seekerwing.aws.sqsconsumer.model.Queue
 import software.amazon.awssdk.services.sqs.model.Message
-import kotlin.coroutines.CoroutineContext
 
 internal class MessageFetcherLauncherTest : CoroutineScope {
 
