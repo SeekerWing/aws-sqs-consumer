@@ -1,50 +1,23 @@
 language: kotlin
 
 jdk:
-- oraclejdk8
+  - oraclejdk8
 
-stages:
-- name: build
-- name: deploy
-  if: branch = master AND type != pull_request
+before_install:
+  - chmod +x gradlew
+  - chmod +x gradle/wrapper/gradle-wrapper.jar
+
+script:
+  - ./gradlew clean build test
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 
 before_cache:
-- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
 cache:
   directories:
-  - "$HOME/.gradle/caches/"
-  - "$HOME/.gradle/wrapper/"
-
-jobs:
-  include:
-  - stage: build
-    script:
-    - ./gradlew clean build test
-    after_success:
-    - bash <(curl -s https://codecov.io/bash)
-    before_install:
-    - chmod +x gradlew
-    - chmod +x gradle/wrapper/gradle-wrapper.jar
-  - stage: deploy
-    script:
-    - ./gradlew clean build test publish
-      -Psigning.keyId="$GPG_KEY_ID"
-      -Psigning.password="$GPG_PASSPHRASE"
-      -Psigning.secretKeyRingFile="$TRAVIS_BUILD_DIR/secret.gpg"
-      -PossrhUsername="$SONATYPE_USERNAME"
-      -PossrhPassword="$SONATYPE_PASSWORD"
-    after_success:
-    - bash <(curl -s https://codecov.io/bash)
-    before_install:
-    - openssl aes-256-cbc -K $encrypted_959d8f6be2a5_key -iv $encrypted_959d8f6be2a5_iv
-      -in secret.gpg.enc -out secret.gpg -d
-    - chmod +x gradlew
-    - chmod +x gradle/wrapper/gradle-wrapper.jar
-    env:
-    - secure: QGC0SYlJRMkobsGhsN/hNShoE8ZtPUMQ2YDfd142/JY6jCfNzqacS1KFw8lEZvwPLoHTSj8HbUiDq/Jf9jJ5C2URlb7rBObu5jpw8p5vEM7vSssOpg/07oTM0CaNqOa83QQGqPtv9/IQ2gLhR7Nr7Osi3NI7jQeJ98wvah8NyMd4dCWXjxE7fomfXItjWa1IYGMG/2GvXwPATfItlMXwzOhFJLBg7ZjJcdnKEb1X9dkyFBUvvUS246GcDuLLILT/H5KQMi1itzDV04kONaTJE77yfl1BtaQZaVWj2wWA+cpBLfp85sB8WMZRhdzDfsw5zJN5TyAfBm+XwZUr/rEWHyc2L+w/fROq6aZJqr4do9aSi/dSnxCDnDN4IVNkKJdqqjhVLMxKPa+D1kbiQx1MPTe+PImWXtxUUPUj7Y+EzIDjlybGg760dG3354nYXqUS78jgvch2VojdlYRh2DW88Lj9Nu64pTU1zvCjKRhomoCCBpllwVWPuCLn/f+RWL5hoaMIhG5H/V9c6D48XqSvEZuy0Xb4a/keIf2QswBM6PzbIwjM6Q+k5Evlov1VrKQKsZQ35frQJ1aNn8z56yjZZ50cspW4pk2kVCom49g772lxi7NleFjHSig7pzOb9zjm5su7F2roYIT1FPlGlxY52jBmzOaOAV7S3XrB5E0H8KY=
-    - secure: sEZ+dHOH88j1lvhpJq+Z3apbm3UoYnDB700VmMswohu7RrCqe3CKHqH6ToW3SKupvtoYDcv67+Jxe+H3xPFNYwyiPm74vvLt9xVcignA8wmCi89FV8kxNv/Cz2iieHRwA0HyNOKRQhwH7K6fk/ucO/CxkQJcsryrzImOFC02FJcdjkFUSoJ5bA63Ka+MrxbmUCUytt8c3B+Wj0+xMERQXCnkJaFhPB5VbjiyBgoZHuSoclaSf0bjr7KdJj+NigiCtJmYGKvteh//s7km7yhohFczKSW8y7gVmYcBJUBfQ+t7Up0SfjoG5WC9VYuJjAa0cT7iuNMRy5Dx29VX+OZs6nhGtZCyIIXNtZK8Iy/yDw6VhiFMMVarqYnXPQQp1CzZfQMofkyAEImwGUdUxxRKOj6X0ODLnNuC+KnfvDtGgjv91hExp0nrxeXsvYqKfhRMKQrDX4NVtUXhgivAtrtWZq37RjFrZszqRbIDGEKoH+zHg1Dav7JlqCj97/pERKgvWyMMZruyt9akFpQMyM0ycs9qj6GjmP2rLSAVvBT4eCXAeRyNJfK78g4XeamhanlqBzTqgFzKvTpkVOjtQM6DZHcq30FtHEWxtEzuKV52KuBgyuKEByjkuLVM6+wMwBAyHWNtLUaUqgSfEI4d0KuDwxxllYtxxV7nocm5m+KHRUs=
-    - secure: YMRk+3sfBldFfeJhf/h7Yn1J6pp43V4k/Eoe1GBzv6QyOIe7ku5oZ5XrGZyrDvDIH1WsiI+ZBOlumEV/vX/OStQCrCqh5KypVNjevLpFwMMT816QuR4Sp1jI3Z9267mOLmBLm5wyY8Ij/Ni9S4GCe5k2LKfPFvaeIko2WmBa7zVqZEStN9b9gTFKyFA5ojImLzE4VPBPKUJ9aQoO9DjZPjBn0ycle67rqFlWwxTqZ4F78WiIxHlf6R0Fqv2XXsRv0nY6numfFCvuHqN/OQ6v9ZmKSCA+r48+pfngZYRExapAAwwy1VddsSzMWxPrV/3ICT7hNgK+xm6JSWPmq6Qf5+m7iGw6a79N5S/5MgTLkLKkQK4L04Kwtw9u4BJF8kO6QJJ8gH2go44jvkpGFKyinmDSDAU9ec5Q14IcI2kKamfR5ARGAMGft2aEABJbUzoRVQUlW72sHFZM8aFl7VorMNMOspF2KAn4UsMB4cNGkGe67E5uLeNZ3e+ssq9Fx09zVGwSYxMoxy1gKUveWq0mPIs5Td8k86Rqp6iD89/OtTd+zsdeZrI0v1nJipdMgdqgtidTWkRHc6NXvcU6iBpUqL/5ismWAsL/r7LTSN3FQePHEyUJx2y1N4hYuIYa1b1ZB4mAVNnFwX/wrJe1hOCfOQgEfLaUMWtjOANnmjmmZmA=
-    - secure: Q5uBUSodV6M1P33VcBRsRBstvuPOT+TqPVwj88xd1Dxn6kIGkS5uOFqhLf1fUVypnPL2JUb0sKg3wFl0OSliqwupwJcBzv6jIEgM4DDs1p/U7kqzhdasxZmef8EW8chN/pJeermOwBH9Mr2kstZtr17xlOMGpL4ezllRgR9tRc2BhblfEWuhbN6xXHsqJuItmaeNde4AyfiA2MLsB1+qrwS3FKvWMvncHpAJlwaKyQ3FymVxGgACcTEjrcPvMtmc3qRtGPLvTF7sqtS2VmklqRZPnWb1M4/oSnFMSbzYCKewqVzcH+G/6D6gk/sLFip00ZrnB5k9QKMm5yDNntptsbLLRzMYZmEILuxHeW/ARPdL8HtU6TDJugbe0Q30nlnv1j6AGCtpZO7pbjOKLepTWof+YNQ0n9fTm7yxZpkSrA3ZXCSQXw50Cx8C8ga3KeR29Xl3uR3GllNBLtiMfUUp72LItlwnewC3LAgqidILuoZS/xJJv8fAjHjusD0do+hO1aUoBQ5305HqUGBE5VVHbHGF8M2Y6KccNi5H05LUIsnVAfsbw3XWNo0iSoB9sbqKxEdiaoGDuQgbE8Ps9V5ZpmKlxVf0sQtka3ubZ6Kjbx9u3KxoNK7abPnJ7YBHpUnkdru6QyMdm2B3MnnxvGW4i3bjZ4YvoagfaGPWvWed8qA=
-    - secure: oZjwxnf9qZQxRCCWnKmMc2kWP5XyOHgmzDlA2wdo+0uFI2VbHgmRm3D7f80rO5S5RDLoI/lnm+tioFXlO4YeNORmLdrGvXAm35RVXO1G4BdAPqbVa7pEUswFyQc4o4LQYQAlnNl6mIO1xhXFkQeC2gXLyeEK450vbVkpBGxedZPLWdSdYstfHsoiOgRrybjvzaVANT/lvUUu+Q/6c41iQxv4LJdm5XxZ9juYyQvPSI74+C2Ud8d2OSpcm6aDwRKl3NR64lAWYKMt5YR/5jqZHbSzKAkfjyYrM7wG0AOhmik1TUXBidFbDLXLB5jhHpc7lOv9RqFRKKe1SgwMcrFUkjs6UuQi7qFfZQmd4PdnUTRS166Y2itgiiuYxIsfgHM/1Lf03sz5Y9b2/5BE8WpbhKNANcsrac5XiVdDy2oy8lyJESO6qpniN9cYBaC2uOtXMgjtcE7PxlKviEDBDUxaXUcBxXt1KbRuWjBjbNUfxrlhbVvKOlu5UDAJsZaUTlIDifY2cjlNHkdYaXQ0g94O19VWkb7L4HALT5TJltY2lwDnBpQ530UqFajjJihzHV/kuFkJpC3gNaiB+qFcxaDg5V9F2jkAr7ktYBjQdlhn2iwchWPuS7c6VA2IPugO94zSQRIpNl505fNaNwOIUfCP14iPdhyv80hWIf3LjI9nGgg=
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
