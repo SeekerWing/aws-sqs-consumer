@@ -116,3 +116,19 @@ SQS assumes that the consumer has failed to process the message and makes it ava
 doing so until the maximum re-drive count is reached and then pushes the message to the DLQ. We strongly recommend 
 against writing explicit code to move messages to DLQ since it adds a point of failure and complicates the code to be 
 maintained in the user's codebase.
+
+#### Q: I hear on [AWS Lambda](https://aws.amazon.com/lambda/) I only need to implement my business logic?
+A: Yes, you are right. [AWS Lambda](https://aws.amazon.com/lambda/) does the heavy lifting of polling for messages and
+handling errors and re-driving messages so that you the user doesn't have to deal with it. You can read more about it at
+[AWS Lambda Event Source Mapping](https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html) and
+[Asynchronous Invocation](https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html) and
+[Error Handling and Automatic Retries in AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/invocation-retries.html).
+
+#### Q: Why do I need this library if [AWS Lambda](https://aws.amazon.com/lambda/) solves for the message processing boilerplate?
+A: [AWS Lambda](https://aws.amazon.com/lambda/) is great for most workloads and will evolve to support even more use cases.
+However, it is fairly common for developers to pick other compute platforms due to use case specific needs. These are
+(but not limited to) [EC2](https://aws.amazon.com/ec2/), [EKS](https://aws.amazon.com/eks/),
+[ECS](https://aws.amazon.com/ecs/) and [Fargate](https://aws.amazon.com/fargate/). When operating on compute platforms
+where an external actor is not polling and providing messages to your compute layer it falls on the developer to code
+for SQS polling, deletion and error handling around messages. This library attempts to alleviate that complexity from
+the developer, allowing them to focus on the business logic of processing the message.
