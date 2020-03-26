@@ -1,23 +1,33 @@
 language: kotlin
-
 jdk:
-  - oraclejdk8
-
+- oraclejdk8
 before_install:
-  - chmod +x gradlew
-  - chmod +x gradle/wrapper/gradle-wrapper.jar
-
+- chmod +x gradlew
+- chmod +x gradle/wrapper/gradle-wrapper.jar
 script:
-  - ./gradlew clean build test
-
+- "./gradlew clean build test"
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
-
+- bash <(curl -s https://codecov.io/bash)
 before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+stages:
+- name: build
+- name: deploy
+  if: branch = master AND type != pull_request
+jobs:
+  include:
+  - stage: build
+    script:
+    - "./gradlew clean build test"
+  - stage: deploy
+    script:
+    - "./gradlew clean build test bintrayUpload"
+env:
+  global:
+  - secure: dzNX+KLeUIV8AyUKjZiUqJrWtsG+PjXdZd6W2xd5gjMw2EMU8qeNR0YQ/xwJDh6YF2cP23SSpLP7Hh5atYeTfxa7MbDJzawZpmrFvgNDN3KrR1MqyVGiY7rPkRYD9jJO+1wbjTHYSEZjiEwgSN2UeuUq6EyLi2L6aLv8tDOUHDqocVDNLagEMDPhz1WXw8qZXxwgd0KkJ2P3jSb8TmvycVMDbQF0ti4ynz0cmp+1XcJZmbsCfkYbXp0vNAcRXxNznxjQCqV5rb6emA41uqFK9ebNL3BqI2A6aURcxpY5h3u5N2FAs5CmNykGiY4yKcPfBRF+6my5ZzVdP4iGq8OxifoUlbcfr+jzEecZeQmg3dm0MXCgHmifEWigNn1zSaLVBxbfIhlDRoiHgoD0cPT11wGbcR03BNQyKX1tK6YF/g/eLapmeGp7T2zrEshGKS14sujzxJqM9qFh2kBCvAyoLL9fsJYCRelVd3q6BwHN6cwTuSmvunSposfRrHD+r83R/9RfBqkvq5/2V86noGH0F6hmFyf79ooJzpakp/ViARsobs2RyBHMc6qfp4Mi5Ng1ERXgNyqCnkP6ybNKAcqZfGCcDzubAfjCZ8I5accr2Kj2LRYlfWj0NYqWbI5LbO8xExZo7z4oPHLvD96Wepbszq8gxj9K7bGbPQrmNMIZucY=
+  - secure: sa9C9YFd4SQCAN1VR7FocMXMyPfgIAOWGSB7mz926DHafZBAIwS6L3cZ196RqzSWUov0GPfOQRuzlDI1kbjz/vpiTyJ7yvLavIQ2vTcVHjQDfWArOn9APy4HSfdWacQnmmRojJKkp4U95MF9SF3Yvj4RvNzeOkqkoHxUD7h60PUs0hwqTHnMKD3c6i9NgJNU/5/KBHAzbboucARPZDKnb5H+qKaAmS2DA+HvOgzKX6FFeCH/5i98FEy0/7TwcmWPxBlePc4lexGVzsU1f1577rxKwa1yNFLZa2COMbOFXCIjRx8I8PcXOvUmw4u/IJ3eNuBRRkyjOPYnt13T3rlR4RpkYXmKNTKJ1h6ZF28UwZxxME19dqmaNq8JZ+Sr7TUVApEKf9hmulfiDcVS67ibUMcsNtueIRX9CuXU+wjUpXRhzFfKuCdHPZpglbvfgMsxjs0HWZjHEtCRqvSNGAUuia7HmU2CMYCHZQ3o6GX6P6K6An4xPr1TexdkTRB00ZE8EJtukGeDINw0b5G6xn39VECFwTTgsHTNDfFjGaLPumiYB0GvKo+OJick1q2WqWSCNG9WpHud5F9RPsNgOPqOCRm6KpYZLXq5JQB0UzE9Jt11C2gA90iWCIneKnZqCmmAroM3+N5IwtQfVIfHpN9qbthbix20IizyLSdLuHcMvU8=
