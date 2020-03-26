@@ -20,8 +20,6 @@ import software.amazon.awssdk.services.sqs.model.Message
 
 internal class MessageDeleterTest {
 
-    val queueUrl = "QUEUE_URL"
-    val receiptHandle = "ReceiptHandle"
     val sqsAsyncClient: SqsAsyncClient = mock()
 
     @Test
@@ -30,13 +28,13 @@ internal class MessageDeleterTest {
     fun deleteMessage() = runBlockingTest {
         val deleteMessageRequest: DeleteMessageRequest = DeleteMessageRequest
             .builder()
-            .queueUrl(queueUrl)
-            .receiptHandle(receiptHandle)
+            .queueUrl(QUEUE_URL)
+            .receiptHandle(RECEIPT_HANDLE)
             .build()
         val message: Message = Message
             .builder()
             .body("HelloWorld")
-            .receiptHandle(receiptHandle)
+            .receiptHandle(RECEIPT_HANDLE)
             .build()
         val deleteMessageResponse: DeleteMessageResponse = DeleteMessageResponse
             .builder()
@@ -50,10 +48,15 @@ internal class MessageDeleterTest {
                 println("$message")
             }
         }
-        val queue = Queue(sqsAsyncClient, queueUrl, QueueContext(messageProcessor))
+        val queue = Queue(sqsAsyncClient, QUEUE_URL, QueueContext(messageProcessor))
         val actualResponse = queue.deleteMessage(message)
 
         assertEquals(actualResponse, deleteMessageResponse)
         verify(sqsAsyncClient, times(1)).deleteMessage(deleteMessageRequest)
+    }
+
+    companion object {
+        const val QUEUE_URL = "QUEUE_URL"
+        const val RECEIPT_HANDLE = "ReceiptHandle"
     }
 }

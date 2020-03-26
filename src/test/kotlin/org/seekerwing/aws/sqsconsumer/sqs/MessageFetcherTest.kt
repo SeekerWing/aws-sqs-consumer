@@ -20,7 +20,6 @@ import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse
 
 internal class MessageFetcherTest {
 
-    val queueUrl = "QUEUE_URL"
     val sqsAsyncClient: SqsAsyncClient = mock()
 
     @Test
@@ -28,7 +27,7 @@ internal class MessageFetcherTest {
     fun fetchMessage() = runBlockingTest {
         val receiveMessageRequest: ReceiveMessageRequest = ReceiveMessageRequest
             .builder()
-            .queueUrl(queueUrl)
+            .queueUrl(QUEUE_URL)
             .maxNumberOfMessages(10)
             .waitTimeSeconds(20)
             .visibilityTimeout(30)
@@ -50,11 +49,15 @@ internal class MessageFetcherTest {
             }
         }
         val queueContext = QueueContext(messageProcessor)
-        val queue = Queue(sqsAsyncClient, queueUrl, queueContext)
+        val queue = Queue(sqsAsyncClient, QUEUE_URL, queueContext)
         val receiveMessage = queue.fetchMessage(MessageFetcherConfiguration())
 
         assertEquals(queueContext, queue.queueContext)
         assertEquals(listOf(message), receiveMessage)
         verify(sqsAsyncClient, times(1)).receiveMessage(receiveMessageRequest)
+    }
+
+    companion object {
+        const val QUEUE_URL = "QUEUE_URL"
     }
 }

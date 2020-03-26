@@ -7,27 +7,30 @@ import org.seekerwing.aws.sqsconsumer.model.Queue
 
 internal class MessageProviderConfigurationTest {
 
-    private val messageFetcherConfiguration: MessageFetcherConfiguration = mockk()
-    private val parallelism = 42
+    private val fetcherConfiguration: MessageFetcherConfiguration = mockk()
     private val queue: Queue = mockk()
 
     @Test
     fun getQueue() {
-        assertEquals(queue, MessageProviderConfiguration(queue, messageFetcherConfiguration).queue)
-        assertEquals(queue, MessageProviderConfiguration(queue, messageFetcherConfiguration, parallelism).queue)
+        assertEquals(queue, MessageProviderConfiguration(queue, fetcherConfiguration).queue)
+        assertEquals(queue, MessageProviderConfiguration(queue, fetcherConfiguration, PARALLELISM).queue)
     }
 
     @Test
     fun getMessageFetcherConfiguration() {
-        assertEquals(messageFetcherConfiguration,
-            MessageProviderConfiguration(queue, messageFetcherConfiguration).messageFetcherConfiguration)
-        assertEquals(messageFetcherConfiguration,
-            MessageProviderConfiguration(queue, messageFetcherConfiguration, parallelism).messageFetcherConfiguration)
+        assertEquals(fetcherConfiguration,
+            MessageProviderConfiguration(queue, fetcherConfiguration).messageFetcherConfiguration)
+        assertEquals(fetcherConfiguration,
+            MessageProviderConfiguration(queue, fetcherConfiguration, PARALLELISM).messageFetcherConfiguration)
     }
 
     @Test
     fun getParallelism() {
-        assertEquals(1, MessageProviderConfiguration(queue, messageFetcherConfiguration).parallelism)
-        assertEquals(42, MessageProviderConfiguration(queue, messageFetcherConfiguration, parallelism).parallelism)
+        assertEquals(1, MessageProviderConfiguration(queue, fetcherConfiguration).parallelism)
+        assertEquals(PARALLELISM, MessageProviderConfiguration(queue, fetcherConfiguration, PARALLELISM).parallelism)
+    }
+
+    companion object {
+        const val PARALLELISM = 42
     }
 }
