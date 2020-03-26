@@ -51,9 +51,9 @@ internal class MessageDeleterTest {
             }
         }
         val queue = Queue(sqsAsyncClient, queueUrl, QueueContext(messageProcessor))
-        val actualDeleteMessageResponse = queue.deleteMessage(message)
+        val actualResponse = queue.deleteMessage(message)
 
-        assertEquals(actualDeleteMessageResponse, deleteMessageResponse)
+        assertEquals(actualResponse, deleteMessageResponse)
         verify(sqsAsyncClient, times(1)).deleteMessage(deleteMessageRequest)
     }
 }
