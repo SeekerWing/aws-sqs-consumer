@@ -1,10 +1,9 @@
 package org.seekerwing.aws.sqsconsumer.builder
 
-import org.seekerwing.aws.sqsconsumer.MessageConsumer
 import org.seekerwing.aws.sqsconsumer.QueueConsumer
-import org.seekerwing.aws.sqsconsumer.SqsQueueConsumer
 import org.seekerwing.aws.sqsconsumer.configuration.ConsumerConfiguration
 import org.seekerwing.aws.sqsconsumer.configuration.MessageProviderConfiguration
+import org.seekerwing.aws.sqsconsumer.messageprovider.MessageProvider
 import org.seekerwing.aws.sqsconsumer.messageprovider.SingleQueueBasedMessageProvider
 
 /**
@@ -17,11 +16,7 @@ import org.seekerwing.aws.sqsconsumer.messageprovider.SingleQueueBasedMessagePro
 class SingleQueueConsumerBuilder(
     private val messageProviderConfiguration: MessageProviderConfiguration,
     private val consumerConfiguration: ConsumerConfiguration = ConsumerConfiguration()
-) : QueueConsumerBuilder {
+) : AbstractQueueConsumerBuilder(consumerConfiguration) {
 
-    override fun build(): QueueConsumer {
-        val messageProvider = SingleQueueBasedMessageProvider(messageProviderConfiguration)
-        val messageConsumer = MessageConsumer(consumerConfiguration)
-        return SqsQueueConsumer(messageProvider, messageConsumer)
-    }
+    override fun messageProvider(): MessageProvider = SingleQueueBasedMessageProvider(messageProviderConfiguration)
 }

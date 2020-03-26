@@ -76,15 +76,15 @@ tasks.withType<JacocoCoverageVerification> {
         rule {
             limit {
                 counter = "LINE"
-                minimum = "0.83".toBigDecimal()
+                minimum = "0.84".toBigDecimal()
             }
             limit {
                 counter = "BRANCH"
-                minimum = "0.91".toBigDecimal()
+                minimum = "1.00".toBigDecimal()
             }
             limit {
                 counter = "COMPLEXITY"
-                minimum = "0.78".toBigDecimal()
+                minimum = "0.79".toBigDecimal()
             }
         }
     }

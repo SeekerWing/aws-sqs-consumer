@@ -42,8 +42,8 @@ internal class MultipleQueueBasedMessageProviderTest {
             any<CoroutineScope>().launchMessageFetcher(eq(providerConfiguration3), any<SendChannel<MessageEnvelope>>())
         } returns Job()
 
-        val multipleQueueBasedMessageProvider = MultipleQueueBasedMessageProvider(providerConfigurations)
-        multipleQueueBasedMessageProvider.provideMessages(this)
+        val messageProvider = MultipleQueueBasedMessageProvider(providerConfigurations)
+        messageProvider.provideMessages(this)
 
         coVerify(exactly = 2) {
             any<CoroutineScope>().launchMessageFetcher(eq(providerConfiguration1), any<SendChannel<MessageEnvelope>>())
