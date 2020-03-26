@@ -1,9 +1,8 @@
 package org.seekerwing.aws.sqsconsumer.configuration
 
 import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 import org.seekerwing.aws.sqsconsumer.model.Queue
 
 internal class MessageProviderConfigurationTest {

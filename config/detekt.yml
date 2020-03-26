@@ -2,8 +2,6 @@
 # Kotlin static analysis: https://github.com/arturbosch/detekt
 #
 #
-autoCorrect: false
-failFast: false
 
 build:
   maxIssues: 0
@@ -25,12 +23,6 @@ console-reports:
   #  - 'NotificationReport'
   #  - 'FindingsReport'
   #  - 'BuildFailureReport'
-
-output-reports:
-  active: true
-  exclude:
-  #  - 'PlainOutputReport'
-  #  - 'XmlOutputReport'
 
 potential-bugs:
   active: true
@@ -236,9 +228,6 @@ formatting:
   NoEmptyClassBody:
     active: true
     autoCorrect: true
-  NoItParamInMultilineLambda:
-    active: true
-    autoCorrect: true
   NoLineBreakAfterElse:
     active: true
     autoCorrect: true
@@ -272,9 +261,6 @@ formatting:
   SpacingAroundColon:
     active: true
     autoCorrect: true
-  SpacingAfterComma:
-    active: true
-    autoCorrect: true
   SpacingAroundCurly:
     active: true
     autoCorrect: true
@@ -288,9 +274,6 @@ formatting:
     active: true
     autoCorrect: true
   SpacingAroundRangeOperator:
-    active: true
-    autoCorrect: true
-  SpacingAroundUnaryOperators:
     active: true
     autoCorrect: true
   StringTemplate:
@@ -471,12 +454,3 @@ comments:
     searchInInnerInterface: true
   UndocumentedPublicFunction:
     active: false
-
-# *experimental feature*
-# Migration rules can be defined in the same config file or a new one
-migration:
-  active: true
-  imports:
-    # your.package.Class: new.package.or.Class
-    # for example:
-    # io.gitlab.arturbosch.detekt.api.Rule: io.gitlab.arturbosch.detekt.rule.Rule

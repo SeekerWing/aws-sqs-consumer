@@ -1,11 +1,11 @@
 package org.seekerwing.aws.sqsconsumer
 
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.seekerwing.aws.sqsconsumer.messageprovider.MessageProvider
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Amazon SQS based implementation of [QueueConsumer].
