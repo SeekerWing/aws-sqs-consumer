@@ -20,6 +20,6 @@ import org.seekerwing.aws.sqsconsumer.model.Queue
  */
 data class MessageProviderConfiguration(
     val queue: Queue,
-    val messageFetcherConfiguration: MessageFetcherConfiguration,
+    val messageFetcherConfiguration: MessageFetcherConfiguration = MessageFetcherConfiguration(),
     val parallelism: Int = 1
 )
