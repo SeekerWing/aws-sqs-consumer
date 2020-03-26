@@ -5,7 +5,9 @@ import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import java.util.concurrent.CompletableFuture
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.seekerwing.aws.sqsconsumer.MessageProcessor
@@ -18,37 +20,40 @@ import software.amazon.awssdk.services.sqs.model.Message
 
 internal class MessageDeleterTest {
 
+    val queueUrl = "QUEUE_URL"
+    val receiptHandle = "ReceiptHandle"
     val sqsAsyncClient: SqsAsyncClient = mock()
 
     @Test
     @DisplayName("validate that deleteMessage invokes SQS deleteMessage")
+    @ExperimentalCoroutinesApi
     fun deleteMessage() = runBlockingTest {
         val deleteMessageRequest: DeleteMessageRequest = DeleteMessageRequest
             .builder()
-            .queueUrl("QUEUE_URL")
-            .receiptHandle("ReceiptHandle")
+            .queueUrl(queueUrl)
+            .receiptHandle(receiptHandle)
             .build()
         val message: Message = Message
             .builder()
             .body("HelloWorld")
-            .receiptHandle("ReceiptHandle")
+            .receiptHandle(receiptHandle)
+            .build()
+        val deleteMessageResponse: DeleteMessageResponse = DeleteMessageResponse
+            .builder()
             .build()
 
         whenever(sqsAsyncClient.deleteMessage(deleteMessageRequest))
-            .thenReturn(
-                CompletableFuture.completedFuture(
-                    DeleteMessageResponse
-                        .builder()
-                        .build()))
+            .thenReturn(CompletableFuture.supplyAsync { deleteMessageResponse })
 
         val messageProcessor = object : MessageProcessor {
             override suspend fun processMessage(message: Message) {
                 println("$message")
             }
         }
-        val queue = Queue(sqsAsyncClient, "QUEUE_URL", QueueContext(messageProcessor))
-        queue.deleteMessage(message)
+        val queue = Queue(sqsAsyncClient, queueUrl, QueueContext(messageProcessor))
+        val actualDeleteMessageResponse = queue.deleteMessage(message)
 
+        assertEquals(actualDeleteMessageResponse, deleteMessageResponse)
         verify(sqsAsyncClient, times(1)).deleteMessage(deleteMessageRequest)
     }
 }

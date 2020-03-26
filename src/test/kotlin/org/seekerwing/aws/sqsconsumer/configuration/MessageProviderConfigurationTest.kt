@@ -18,8 +18,10 @@ internal class MessageProviderConfigurationTest {
 
     @Test
     fun getMessageFetcherConfiguration() {
-        assertEquals(messageFetcherConfiguration, MessageProviderConfiguration(queue, messageFetcherConfiguration).messageFetcherConfiguration)
-        assertEquals(messageFetcherConfiguration, MessageProviderConfiguration(queue, messageFetcherConfiguration, 42).messageFetcherConfiguration)
+        assertEquals(messageFetcherConfiguration,
+            MessageProviderConfiguration(queue, messageFetcherConfiguration).messageFetcherConfiguration)
+        assertEquals(messageFetcherConfiguration,
+            MessageProviderConfiguration(queue, messageFetcherConfiguration, 42).messageFetcherConfiguration)
     }
 
     @Test

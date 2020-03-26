@@ -14,6 +14,7 @@ import org.seekerwing.aws.sqsconsumer.model.MessageEnvelope
 import org.seekerwing.aws.sqsconsumer.model.Queue
 import org.seekerwing.aws.sqsconsumer.model.QueueContext
 import org.seekerwing.aws.sqsconsumer.sqs.deleteMessage
+import software.amazon.awssdk.services.sqs.model.DeleteMessageResponse
 import software.amazon.awssdk.services.sqs.model.Message
 
 internal class MessageConsumerTest {
@@ -29,6 +30,7 @@ internal class MessageConsumerTest {
         val queueContext = QueueContext(messageProcessor)
         val consumerConfiguration = ConsumerConfiguration(2)
         val messageConsumer = MessageConsumer(consumerConfiguration)
+        val deleteMessageResponse: DeleteMessageResponse = DeleteMessageResponse.builder().build()
 
         val message1 = buildMessage(1)
         val message2 = buildMessage(2)
@@ -46,12 +48,12 @@ internal class MessageConsumerTest {
         coEvery { messageProcessor.processMessage(message4) } returns Unit
         coEvery { messageProcessor.processMessage(message5) } returns Unit
         coEvery { messageProcessor.processMessage(message6) } returns Unit
-        coEvery { queue.deleteMessage(message1) } returns Unit
-        coEvery { queue.deleteMessage(message2) } returns Unit
-        coEvery { queue.deleteMessage(message3) } returns Unit
-        coEvery { queue.deleteMessage(message4) } returns Unit
+        coEvery { queue.deleteMessage(message1) } returns deleteMessageResponse
+        coEvery { queue.deleteMessage(message2) } returns deleteMessageResponse
+        coEvery { queue.deleteMessage(message3) } returns deleteMessageResponse
+        coEvery { queue.deleteMessage(message4) } returns deleteMessageResponse
         coEvery { queue.deleteMessage(message5) } throws RuntimeException("queue exploded 💣")
-        coEvery { queue.deleteMessage(message6) } returns Unit
+        coEvery { queue.deleteMessage(message6) } returns deleteMessageResponse
 
         coEvery { channel.iterator() } returns channelIterator
         coEvery { channelIterator.hasNext() } returns

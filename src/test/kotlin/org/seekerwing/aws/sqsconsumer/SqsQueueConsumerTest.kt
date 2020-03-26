@@ -27,6 +27,8 @@ internal class SqsQueueConsumerTest {
 
         sqsQueueConsumer.start()
 
+        sqsQueueConsumer.stop()
+
         coVerify(exactly = 1) { messageProvider.provideMessages(any<CoroutineScope>()) }
         coVerify(exactly = 1) { messageConsumer.launchConsumer(any<CoroutineScope>(), eq(receiveChannel)) }
     }

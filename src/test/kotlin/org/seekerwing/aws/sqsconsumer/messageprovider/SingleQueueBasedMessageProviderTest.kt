@@ -31,8 +31,8 @@ internal class SingleQueueBasedMessageProviderTest {
             any<CoroutineScope>().launchMessageFetcher(eq(providerConfiguration), any<SendChannel<MessageEnvelope>>())
         } returns Job()
 
-        val singleQueueBasedMessageProvider = SingleQueueBasedMessageProvider(providerConfiguration)
-        singleQueueBasedMessageProvider.provideMessages(this)
+        val messageProvider = SingleQueueBasedMessageProvider(providerConfiguration)
+        messageProvider.provideMessages(this)
 
         coVerify(exactly = 2) {
             any<CoroutineScope>().launchMessageFetcher(eq(providerConfiguration), any<SendChannel<MessageEnvelope>>())
