@@ -26,14 +26,14 @@ The "unique selling proposition" of [AWS SQS Consumer](https://github.com/Seeker
 ## User Guide
 
 [AWS SQS Consumer](https://github.com/SeekerWing/aws-sqs-consumer) has two public interfaces for the user.
-* [QueueConsumer](https://github.com/SeekerWing/aws-sqs-consumer/blob/master/src/main/kotlin/org/seekerwing/aws/sqsconsumer/QueueConsumer.kt) - framework interface starts/stops the process of polling messages and processing them
-* [MessageProcessor](https://github.com/SeekerWing/aws-sqs-consumer/blob/master/src/main/kotlin/org/seekerwing/aws/sqsconsumer/MessageProcessor.kt) - implementation hook for the user to implement business logic for a given [Message](https://sdk.amazonaws.com/java/api/latest/software/amazon/awssdk/services/sqs/model/Message.html)
+*   [QueueConsumer](https://github.com/SeekerWing/aws-sqs-consumer/blob/master/src/main/kotlin/org/seekerwing/aws/sqsconsumer/QueueConsumer.kt) - framework interface starts/stops the process of polling messages and processing them
+*   [MessageProcessor](https://github.com/SeekerWing/aws-sqs-consumer/blob/master/src/main/kotlin/org/seekerwing/aws/sqsconsumer/MessageProcessor.kt) - implementation hook for the user to implement business logic for a given [Message](https://sdk.amazonaws.com/java/api/latest/software/amazon/awssdk/services/sqs/model/Message.html)
 
 The usage involves implementing a [MessageProcessor](https://github.com/SeekerWing/aws-sqs-consumer/blob/master/src/main/kotlin/org/seekerwing/aws/sqsconsumer/MessageProcessor.kt)
 and wiring up the [QueueConsumer](https://github.com/SeekerWing/aws-sqs-consumer/blob/master/src/main/kotlin/org/seekerwing/aws/sqsconsumer/QueueConsumer.kt)
 
 ### Implementing [MessageProcessor](https://github.com/SeekerWing/aws-sqs-consumer/blob/master/src/main/kotlin/org/seekerwing/aws/sqsconsumer/MessageProcessor.kt)
-```
+```kotlin
 import org.apache.logging.log4j.kotlin.Logging
 import software.amazon.awssdk.services.sqs.model.Message
 
@@ -48,7 +48,7 @@ class MyAwesomeMessageProcessor : MessageProcessor, Logging {
 ```
 
 ### Wiring Up [QueueConsumer](https://github.com/SeekerWing/aws-sqs-consumer/blob/master/src/main/kotlin/org/seekerwing/aws/sqsconsumer/QueueConsumer.kt)
-```
+```kotlin
 import org.apache.logging.log4j.kotlin.Logging
 import org.seekerwing.aws.sqsconsumer.builder.SingleQueueConsumerBuilder
 import org.seekerwing.aws.sqsconsumer.configuration.ConsumerConfiguration
