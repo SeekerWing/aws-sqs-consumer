@@ -10,23 +10,23 @@
 
 ## Introduction
 
-[Amazon Simple Queue Service](https://aws.amazon.com/sqs/) is a fully managed message queuing service that enables you to decouple and scale microservices, distributed systems, and serverless applications. 
+[Amazon Simple Queue Service](https://aws.amazon.com/sqs/) is a fully managed message queuing service that enables the developer to decouple and scale microservices, distributed systems, and serverless applications. 
 
-The [AWS SQS Consumer](https://github.com/SeekerWing/aws-sqs-consumer) aims to reduce time to launch a SQS Message Consumer by empowering developers to focus on business logic of processing the message. 
+The [AWS SQS Consumer](https://github.com/SeekerWing/aws-sqs-consumer) reduces time to launch a SQS Message Consumer, by empowering developers to focus on business logic of consuming the message. 
 
-The "unique selling proposition" of [AWS SQS Consumer](https://github.com/SeekerWing/aws-sqs-consumer) are:
-*   support for priority based consumption of Messages across multiple Queues 
-*   asynchronous (truly non-blocking) implementation at it's core to maximize throughput and optimize resource utilization by leveraging [Asynchronous AWS SDK for Java 2.0](https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/basics-async.html) and [Kotlin > Coroutines > Channels](https://kotlinlang.org/docs/reference/coroutines/channels.html) 
-*   out of the box exception handling via [Dead-Letter Queues](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html)
-*   abstraction of complexity involved in invoking SQS APIs [ReceiveMessage](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ReceiveMessage.html) and [DeleteMessage](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_DeleteMessage.html)
-*   cost reduction via default behavior set to [Long Polling](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-long-polling.html)  
+The "unique selling proposition" of [AWS SQS Consumer](https://github.com/SeekerWing/aws-sqs-consumer) includes:
+*   support for priority-based consumption of Messages across multiple Queues 
+*   asynchronous (truly non-blocking) implementation to maximize throughput and optimize resource utilization by leveraging [Asynchronous AWS SDK for Java 2.0](https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/basics-async.html) and [Kotlin > Coroutines > Channels](https://kotlinlang.org/docs/reference/coroutines/channels.html) 
+*   out-of-the-box exception handling via [Dead-Letter Queues](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html)
+*   hides complexity involved in invoking SQS APIs [ReceiveMessage](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ReceiveMessage.html) and [DeleteMessage](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_DeleteMessage.html)
+*   cost reduction because default behavior set to [Long Polling](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-long-polling.html)  
 
 ## Design
 
 ## User Guide
 
 [AWS SQS Consumer](https://github.com/SeekerWing/aws-sqs-consumer) has two public interfaces for the user.
-*   [QueueConsumer](https://github.com/SeekerWing/aws-sqs-consumer/blob/master/src/main/kotlin/org/seekerwing/aws/sqsconsumer/QueueConsumer.kt) - framework interface starts/stops the process of polling messages and processing them
+*   [QueueConsumer](https://github.com/SeekerWing/aws-sqs-consumer/blob/master/src/main/kotlin/org/seekerwing/aws/sqsconsumer/QueueConsumer.kt) - framework interface starts/stops the process of polling messages and processing/consuming them
 *   [MessageProcessor](https://github.com/SeekerWing/aws-sqs-consumer/blob/master/src/main/kotlin/org/seekerwing/aws/sqsconsumer/MessageProcessor.kt) - implementation hook for the user to implement business logic for a given [Message](https://sdk.amazonaws.com/java/api/latest/software/amazon/awssdk/services/sqs/model/Message.html)
 
 The usage involves implementing a [MessageProcessor](https://github.com/SeekerWing/aws-sqs-consumer/blob/master/src/main/kotlin/org/seekerwing/aws/sqsconsumer/MessageProcessor.kt)
@@ -99,36 +99,36 @@ class MyAwesomeQueueConsumerApp : Logging {
 ## FAQ
 
 #### Q: I don't speak Kotlin, can I still use this library?
-A: Kotlin is a JVM based language, the beauty of Kotlin is its interoperability with Java. You can read more about it 
+A: Kotlin is a JVM based language; the beauty of Kotlin is its interoperability with Java. You can read more about it 
 at [Calling Kotlin from Java](https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html) and 
 [Calling Java code from Kotlin](https://kotlinlang.org/docs/reference/java-interop.html).
 
 #### Q: How do I handle errors encountered while processing a message?
 A: The library recommends that you bubble up your exceptions and let the 
 [SQS (re-drive + DLQ)](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html) 
-concept take care of it. Let us deep dive to get a better understanding of what we're proposing here.
-In the normal course of events after the [MessageProcessor](https://github.com/SeekerWing/aws-sqs-consumer/blob/master/src/main/kotlin/org/seekerwing/aws/sqsconsumer/MessageProcessor.kt)
-returns control to the library (without an exception) the library deletes the message from the queue thus marking 
+concept take care of it. Let us do a deep dive here to get a better understanding of what we're proposing.
+In the normal course of events, after the [MessageProcessor](https://github.com/SeekerWing/aws-sqs-consumer/blob/master/src/main/kotlin/org/seekerwing/aws/sqsconsumer/MessageProcessor.kt)
+returns control to the library (without an exception), the library deletes the message from the queue - thus marking 
 successful completion of the message processing. However, when the [MessageProcessor](https://github.com/SeekerWing/aws-sqs-consumer/blob/master/src/main/kotlin/org/seekerwing/aws/sqsconsumer/MessageProcessor.kt)
-throws an exception the library does not delete the message from then queue. Eventually the visibility timeout of the 
+throws an exception, the library does not delete the message from the queue. Eventually, the visibility timeout of the 
 message expires. When the visibility timeout of a message expires before it has been deleted explicitly by a consumer, 
 SQS assumes that the consumer has failed to process the message and makes it available to be consumed again. SQS keeps 
-doing so until the maximum re-drive count is reached and then pushes the message to the DLQ. We strongly recommend 
-against writing explicit code to move messages to DLQ since it adds a point of failure and complicates the code to be 
-maintained in the user's codebase.
+on doing so until the maximum re-drive count is reached after which SQS pushes the message to the DLQ. We strongly 
+recommend against writing explicit code to move messages to DLQ because it adds a point of failure and complicates the 
+code maintenance in the user's codebase.
 
 #### Q: I hear on [AWS Lambda](https://aws.amazon.com/lambda/) I only need to implement my business logic?
 A: Yes, you are right. [AWS Lambda](https://aws.amazon.com/lambda/) does the heavy lifting of polling for messages and
-handling errors and re-driving messages so that you the user doesn't have to deal with it. You can read more about it at
+handling errors and re-driving messages so that the developer doesn't have to deal with it. You can read more about it at
 [AWS Lambda Event Source Mapping](https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html) and
 [Asynchronous Invocation](https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html) and
 [Error Handling and Automatic Retries in AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/invocation-retries.html).
 
 #### Q: Why do I need this library if [AWS Lambda](https://aws.amazon.com/lambda/) solves for the message processing boilerplate?
-A: [AWS Lambda](https://aws.amazon.com/lambda/) is great for most workloads and will evolve to support even more use cases.
-However, it is fairly common for developers to pick other compute platforms due to use case specific needs. These are
-(but not limited to) [EC2](https://aws.amazon.com/ec2/), [EKS](https://aws.amazon.com/eks/),
-[ECS](https://aws.amazon.com/ecs/) and [Fargate](https://aws.amazon.com/fargate/). When operating on compute platforms
-where an external actor is not polling and providing messages to your compute layer it falls on the developer to code
-for SQS polling, deletion and error handling around messages. This library attempts to alleviate that complexity from
-the developer, allowing them to focus on the business logic of processing the message.
+A: [AWS Lambda](https://aws.amazon.com/lambda/) is great for most workloads and is evolving gradually to support more
+use cases. However, it is fairly common for developers to use other compute platforms for not standard workloads.
+These are (but not limited to) [EC2](https://aws.amazon.com/ec2/), [EKS](https://aws.amazon.com/eks/),
+[ECS](https://aws.amazon.com/ecs/) and [Fargate](https://aws.amazon.com/fargate/). When using compute platforms
+where an external actor is not polling and providing messages to your compute layer, it is the developer's responsibility
+to code for SQS polling, deletion and error handling around messages. This library attempts to alleviate that complexity
+from the developer, allowing the developer to focus on the business logic of processing/consuming the message.
