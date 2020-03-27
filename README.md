@@ -23,6 +23,8 @@ The "unique selling proposition" of [AWS SQS Consumer](https://github.com/Seeker
 
 ## Design
 
+![design diagram](aws-sqs-consumer.png)
+
 ## User Guide
 
 [AWS SQS Consumer](https://github.com/SeekerWing/aws-sqs-consumer) has two public interfaces for the user.
