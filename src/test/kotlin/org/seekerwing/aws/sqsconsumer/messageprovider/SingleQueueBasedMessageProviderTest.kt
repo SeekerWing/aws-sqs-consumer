@@ -22,7 +22,7 @@ internal class SingleQueueBasedMessageProviderTest {
     @DisplayName("validate that provideMessages invokes launchMessageFetcher N (parallelism) times")
     fun provideMessage() = runBlockingTest {
         val queue: Queue = mockk()
-        val fetcherConfiguration = MessageFetcherConfiguration()
+        val fetcherConfiguration = MessageFetcherConfiguration(10, 20, 30)
         val providerConfiguration = MessageProviderConfiguration(queue, fetcherConfiguration, 2)
 
         mockkStatic("org.seekerwing.aws.sqsconsumer.sqs.MessageFetcherLauncherKt")

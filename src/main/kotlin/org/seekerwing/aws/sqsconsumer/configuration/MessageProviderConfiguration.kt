@@ -20,6 +20,14 @@ import org.seekerwing.aws.sqsconsumer.model.Queue
  */
 data class MessageProviderConfiguration(
     val queue: Queue,
-    val messageFetcherConfiguration: MessageFetcherConfiguration = MessageFetcherConfiguration(),
+    val messageFetcherConfiguration: MessageFetcherConfiguration,
     val parallelism: Int = 1
-)
+) {
+
+    @Deprecated(
+        message = "Please specify messageFetcherConfiguration explicitly",
+        replaceWith = ReplaceWith("MessageProviderConfiguration(" +
+                "queue, /* TODO revisit parameter*/ MessageFetcherConfiguration(), parallelism)")
+    )
+    constructor(queue: Queue, parallelism: Int = 1) : this(queue, MessageFetcherConfiguration(), parallelism)
+}

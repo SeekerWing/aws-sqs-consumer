@@ -30,6 +30,11 @@ internal class MessageProviderConfigurationTest {
         assertEquals(PARALLELISM, MessageProviderConfiguration(queue, fetcherConfiguration, PARALLELISM).parallelism)
     }
 
+    @Test
+    fun getDefaultConfiguration() {
+        assertEquals(10, MessageProviderConfiguration(queue).messageFetcherConfiguration.maximumNumberOfMessages)
+    }
+
     companion object {
         const val PARALLELISM = 42
     }

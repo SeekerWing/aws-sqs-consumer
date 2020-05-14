@@ -21,7 +21,7 @@ internal class MultipleQueueBasedMessageProviderTest {
     @Test
     @DisplayName("validate that provideMessages invokes launchMessageFetcher for each queue in MessageProviderConfiguration N (parallelism) times")
     fun provideMessage() = runBlockingTest {
-        val fetcherConfiguration = MessageFetcherConfiguration()
+        val fetcherConfiguration = MessageFetcherConfiguration(10, 20, 30)
         val queue1: Queue = mockk()
         val providerConfiguration1 = MessageProviderConfiguration(queue1, fetcherConfiguration, 2)
         val queue2: Queue = mockk()

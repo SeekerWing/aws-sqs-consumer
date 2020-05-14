@@ -33,7 +33,7 @@ internal class MessageFetcherLauncherTest : CoroutineScope {
     @Test
     @DisplayName("validate that launchMessageFetcher invokes Queue.fetchMessage and Channel.send each Message")
     fun launchMessageFetcher() {
-        val fetcherConfiguration = MessageFetcherConfiguration()
+        val fetcherConfiguration = MessageFetcherConfiguration(10, 20, 30)
         val providerConfiguration = MessageProviderConfiguration(queue, fetcherConfiguration)
 
         mockkStatic("org.seekerwing.aws.sqsconsumer.sqs.MessageFetcherKt")

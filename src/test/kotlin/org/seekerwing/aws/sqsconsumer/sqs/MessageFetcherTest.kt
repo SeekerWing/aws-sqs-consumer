@@ -50,7 +50,7 @@ internal class MessageFetcherTest {
         }
         val queueContext = QueueContext(messageProcessor)
         val queue = Queue(sqsAsyncClient, QUEUE_URL, queueContext)
-        val receiveMessage = queue.fetchMessage(MessageFetcherConfiguration())
+        val receiveMessage = queue.fetchMessage(MessageFetcherConfiguration(10, 20, 30))
 
         assertEquals(queueContext, queue.queueContext)
         assertEquals(listOf(message), receiveMessage)
