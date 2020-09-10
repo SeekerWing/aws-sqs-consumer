@@ -21,7 +21,7 @@ plugins {
 }
 
 group = "org.seekerwing"
-version = "0.2"
+version = "0.1"
 
 repositories {
     mavenCentral()
