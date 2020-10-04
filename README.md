@@ -1,4 +1,5 @@
 # aws-sqs-consumer
+# new to code
 
 [![Build Status](https://travis-ci.com/SeekerWing/aws-sqs-consumer.svg?branch=master)](https://travis-ci.com/SeekerWing/aws-sqs-consumer)
 [![Download](https://api.bintray.com/packages/seekerwing/maven/aws-sqs-consumer/images/download.svg)](https://bintray.com/seekerwing/maven/aws-sqs-consumer/_latestVersion) 
