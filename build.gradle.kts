@@ -16,7 +16,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "9.2.0"
     id("org.jetbrains.dokka") version "0.10.1"
     jacoco
-    id("com.jfrog.bintray") version "1.8.4"
+    id("com.jfrog.bintray") version "1.8.5"
     `maven-publish`
 }
 
