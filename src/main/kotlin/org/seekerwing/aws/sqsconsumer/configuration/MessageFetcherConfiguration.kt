@@ -16,9 +16,13 @@ package org.seekerwing.aws.sqsconsumer.configuration
  * [visibilityTimeoutSeconds] indicates duration (in seconds) that the message is hidden from subsequent fetch requests
  * after being fetched;
  * valid values: 0 to 43200; default value: 30.
+ *
+ * [maxBatchSize] indicates the number of messages that are handled in batch.
+ * valid values: > 0. default value 1.
  */
 data class MessageFetcherConfiguration(
     val maximumNumberOfMessages: Int = 10,
     val waitTimeSeconds: Int = 20,
-    val visibilityTimeoutSeconds: Int = 30
+    val visibilityTimeoutSeconds: Int = 30,
+    val maxBatchSize: Int = 1
 )

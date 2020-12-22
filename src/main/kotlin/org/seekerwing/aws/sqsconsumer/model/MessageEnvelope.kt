@@ -4,9 +4,9 @@ import software.amazon.awssdk.services.sqs.model.Message
 
 /**
  * Business Object for Message Envelope;
- * encapsulates [Message] and associated [Queue].
+ * encapsulates [Set] of [Message]s and associated [Queue].
  */
 internal data class MessageEnvelope(
-    val message: Message,
+    val messages: Set<Message>,
     val sourceQueue: Queue
 )

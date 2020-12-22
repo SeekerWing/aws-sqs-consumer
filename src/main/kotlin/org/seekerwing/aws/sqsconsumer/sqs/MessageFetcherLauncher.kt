@@ -7,7 +7,6 @@ import kotlinx.coroutines.launch
 import org.apache.logging.log4j.kotlin.logger
 import org.seekerwing.aws.sqsconsumer.configuration.MessageProviderConfiguration
 import org.seekerwing.aws.sqsconsumer.model.MessageEnvelope
-import software.amazon.awssdk.services.sqs.model.Message
 
 internal fun CoroutineScope.launchMessageFetcher(
     configuration: MessageProviderConfiguration,
@@ -15,13 +14,20 @@ internal fun CoroutineScope.launchMessageFetcher(
 ) = launch {
     while (isActive) {
         try {
-            configuration.queue
-                .fetchMessage(configuration.messageFetcherConfiguration)
-                .forEach { message: Message ->
-                    channel.send(MessageEnvelope(message, configuration.queue))
-                }
+            fetchAndProcessMessages(configuration, channel)
         } catch (e: Exception) {
             logger().error("exception fetching message from $configuration.queue", e)
         }
     }
+}
+
+private suspend fun fetchAndProcessMessages(
+    configuration: MessageProviderConfiguration,
+    channel: SendChannel<MessageEnvelope>
+) {
+    configuration.queue
+        .fetchMessage(configuration.messageFetcherConfiguration)
+        .chunked(configuration.messageFetcherConfiguration.maxBatchSize)
+        .map { it.toSet() }
+        .forEach { channel.send(MessageEnvelope(it, configuration.queue)) }
 }
