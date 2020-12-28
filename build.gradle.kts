@@ -38,7 +38,7 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-core:2.14.0")
 
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.5")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.6.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
     testImplementation("io.mockk:mockk:1.9.3")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
 }
