@@ -16,7 +16,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "9.2.0"
     id("org.jetbrains.dokka") version "0.10.1"
     jacoco
-    id("com.jfrog.bintray") version "1.8.4"
+    id("com.jfrog.bintray") version "1.8.5"
     `maven-publish`
 }
 
@@ -32,14 +32,14 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2-native-mt")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.2-native-mt")
-    implementation("software.amazon.awssdk:sqs:2.11.0")
+    implementation("software.amazon.awssdk:sqs:2.15.57")
     implementation("org.apache.logging.log4j:log4j-api-kotlin:1.0.0")
     implementation("org.apache.logging.log4j:log4j-api:2.14.0")
     implementation("org.apache.logging.log4j:log4j-core:2.14.0")
 
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.5")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2-native-mt")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.1")
-    testImplementation("io.mockk:mockk:1.9.3")
+    testImplementation("io.mockk:mockk:1.10.4")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
 }
 
