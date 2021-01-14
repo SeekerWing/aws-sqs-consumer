@@ -13,8 +13,8 @@ import org.seekerwing.aws.sqsconsumer.configuration.ConsumerConfiguration
 import org.seekerwing.aws.sqsconsumer.model.MessageEnvelope
 import org.seekerwing.aws.sqsconsumer.model.Queue
 import org.seekerwing.aws.sqsconsumer.model.QueueContext
-import org.seekerwing.aws.sqsconsumer.sqs.deleteMessage
-import software.amazon.awssdk.services.sqs.model.DeleteMessageResponse
+import org.seekerwing.aws.sqsconsumer.sqs.deleteMessages
+import software.amazon.awssdk.services.sqs.model.DeleteMessageBatchResponse
 import software.amazon.awssdk.services.sqs.model.Message
 
 internal class MessageConsumerTest {
@@ -25,35 +25,32 @@ internal class MessageConsumerTest {
     val channelIterator: ChannelIterator<MessageEnvelope> = mockk()
 
     @Test
-    @DisplayName("validate that launchConsumer iterates over ReceiveChannel invokes MessageProcessor.processMessage and Queue.deleteMessage for each Message")
+    @DisplayName("validate that launchConsumer iterates over ReceiveChannel invokes MessageProcessor.processMessages and Queue.deleteMessages for each Message batch")
     fun launchConsumer() = runBlockingTest {
         val queueContext = QueueContext(messageProcessor)
         val consumerConfiguration = ConsumerConfiguration(2)
         val messageConsumer = MessageConsumer(consumerConfiguration)
-        val deleteMessageResponse: DeleteMessageResponse = DeleteMessageResponse.builder().build()
+        val deleteBatchResponse = DeleteMessageBatchResponse.builder().build()
 
-        val message1 = buildMessage(1)
-        val message2 = buildMessage(2)
-        val message3 = buildMessage(3)
-        val message4 = buildMessage(4)
-        val message5 = buildMessage(5)
-        val message6 = buildMessage(6)
+        val messageBatch1 = setOf(buildMessage(1), buildMessage(2), buildMessage(3))
+        val messageBatch2 = setOf(buildMessage(4))
+        val messageBatch3 = setOf(buildMessage(5), buildMessage(6))
+        val messageBatch4 = setOf(buildMessage(7), buildMessage(8), buildMessage(9))
+        val messageBatch5 = emptySet<Message>()
 
         mockkStatic("org.seekerwing.aws.sqsconsumer.sqs.MessageDeleterKt")
 
         coEvery { queue.queueContext } returns queueContext
-        coEvery { messageProcessor.processMessage(message1) } returns Unit
-        coEvery { messageProcessor.processMessage(message2) } throws RuntimeException("processor exploded 💣")
-        coEvery { messageProcessor.processMessage(message3) } returns Unit
-        coEvery { messageProcessor.processMessage(message4) } returns Unit
-        coEvery { messageProcessor.processMessage(message5) } returns Unit
-        coEvery { messageProcessor.processMessage(message6) } returns Unit
-        coEvery { queue.deleteMessage(message1) } returns deleteMessageResponse
-        coEvery { queue.deleteMessage(message2) } returns deleteMessageResponse
-        coEvery { queue.deleteMessage(message3) } returns deleteMessageResponse
-        coEvery { queue.deleteMessage(message4) } returns deleteMessageResponse
-        coEvery { queue.deleteMessage(message5) } throws RuntimeException("queue exploded 💣")
-        coEvery { queue.deleteMessage(message6) } returns deleteMessageResponse
+        coEvery { messageProcessor.processMessages(messageBatch1) } returns emptySet()
+        coEvery { messageProcessor.processMessages(messageBatch2) } throws RuntimeException("processor exploded 💣")
+        coEvery { messageProcessor.processMessages(messageBatch3) } returns emptySet()
+        coEvery { messageProcessor.processMessages(messageBatch4) } returns setOf(buildMessage(8))
+        coEvery { messageProcessor.processMessages(messageBatch5) } returns emptySet()
+        coEvery { queue.deleteMessages(messageBatch1) } returns deleteBatchResponse
+        coEvery { queue.deleteMessages(messageBatch2) } returns deleteBatchResponse
+        coEvery { queue.deleteMessages(messageBatch3) } throws RuntimeException("queue exploded 💣")
+        coEvery { queue.deleteMessages(messageBatch4.minus(buildMessage(8))) } returns deleteBatchResponse
+        coEvery { queue.deleteMessages(messageBatch5) } returns deleteBatchResponse
 
         coEvery { channel.iterator() } returns channelIterator
         coEvery { channelIterator.hasNext() } returns
@@ -62,30 +59,29 @@ internal class MessageConsumerTest {
                 true andThen
                 true andThen
                 true andThen
-                true andThen
                 false
         coEvery { channelIterator.next() } returns
-                MessageEnvelope(message1, queue) andThen
-                MessageEnvelope(message2, queue) andThen
-                MessageEnvelope(message3, queue) andThen
-                MessageEnvelope(message4, queue) andThen
-                MessageEnvelope(message5, queue) andThen
-                MessageEnvelope(message6, queue)
+                MessageEnvelope(messageBatch1, queue) andThen
+                MessageEnvelope(messageBatch2, queue) andThen
+                MessageEnvelope(messageBatch3, queue) andThen
+                MessageEnvelope(messageBatch4, queue) andThen
+                MessageEnvelope(messageBatch5, queue)
 
         messageConsumer.launchConsumer(this, channel)
 
-        coVerify(exactly = 1) { messageProcessor.processMessage(message1) }
-        coVerify(exactly = 1) { messageProcessor.processMessage(message2) }
-        coVerify(exactly = 1) { messageProcessor.processMessage(message3) }
-        coVerify(exactly = 1) { messageProcessor.processMessage(message4) }
-        coVerify(exactly = 1) { messageProcessor.processMessage(message5) }
-        coVerify(exactly = 1) { messageProcessor.processMessage(message6) }
-        coVerify(exactly = 1) { queue.deleteMessage(message1) }
-        coVerify(exactly = 0) { queue.deleteMessage(message2) } // messageProcessor threw exception for m2
-        coVerify(exactly = 1) { queue.deleteMessage(message3) }
-        coVerify(exactly = 1) { queue.deleteMessage(message4) }
-        coVerify(exactly = 1) { queue.deleteMessage(message5) }
-        coVerify(exactly = 1) { queue.deleteMessage(message6) }
+        coVerify(exactly = 1) { messageProcessor.processMessages(messageBatch1) }
+        coVerify(exactly = 1) { messageProcessor.processMessages(messageBatch2) }
+        coVerify(exactly = 1) { messageProcessor.processMessages(messageBatch3) }
+        coVerify(exactly = 1) { messageProcessor.processMessages(messageBatch4) }
+        coVerify(exactly = 1) { messageProcessor.processMessages(messageBatch5) }
+        coVerify(exactly = 1) { queue.deleteMessages(messageBatch1) }
+        // no delete because of exception in processing entire batch
+        coVerify(exactly = 0) { queue.deleteMessages(messageBatch2) }
+        coVerify(exactly = 1) { queue.deleteMessages(messageBatch3) }
+        // partial delete as one message failed in processing
+        coVerify(exactly = 1) { queue.deleteMessages(messageBatch4.minus(buildMessage(8))) }
+        // no delete because empty input message set
+        coVerify(exactly = 0) { queue.deleteMessages(messageBatch5) }
     }
 
     private fun buildMessage(identifier: Int): Message {

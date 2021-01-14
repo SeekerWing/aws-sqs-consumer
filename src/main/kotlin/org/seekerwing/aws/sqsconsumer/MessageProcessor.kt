@@ -15,5 +15,18 @@ import software.amazon.awssdk.services.sqs.model.Message
  */
 interface MessageProcessor {
 
-    suspend fun processMessage(message: Message)
+    /**
+     * Processes a set of messages.
+     * @return set of messages that could not be processed
+     */
+    suspend fun processMessages(messages: Set<Message>): Set<Message> {
+        messages.forEach { processMessage(it) }
+        return emptySet()
+    }
+
+    /**
+     * Processes a single message. Called by [MessageProcessor.processMessages].
+     */
+    suspend fun processMessage(message: Message) {
+    }
 }

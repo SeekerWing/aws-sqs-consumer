@@ -6,7 +6,7 @@ import kotlinx.coroutines.launch
 import org.apache.logging.log4j.kotlin.Logging
 import org.seekerwing.aws.sqsconsumer.configuration.ConsumerConfiguration
 import org.seekerwing.aws.sqsconsumer.model.MessageEnvelope
-import org.seekerwing.aws.sqsconsumer.sqs.deleteMessage
+import org.seekerwing.aws.sqsconsumer.sqs.deleteMessages
 
 /**
  * [MessageConsumer] consumes [MessageEnvelope] from the [ReceiveChannel] populated by the
@@ -25,14 +25,23 @@ internal open class MessageConsumer(private val configuration: ConsumerConfigura
 
     private fun launchSingleConsumer(coroutineScope: CoroutineScope, channel: ReceiveChannel<MessageEnvelope>) =
             coroutineScope.launch {
-        for (messageEnvelope in channel) {
-            try {
-                messageEnvelope.sourceQueue.queueContext.messageProcessor.processMessage(messageEnvelope.message)
-                messageEnvelope.sourceQueue.deleteMessage(messageEnvelope.message)
-            } catch (e: Exception) {
-                logger.error("exception processing message ${messageEnvelope.message}", e)
-            }
-        }
+                for (messageEnvelope in channel) {
+                    try {
+                        val failedMessages =
+                            messageEnvelope
+                                .sourceQueue
+                                .queueContext
+                                .messageProcessor
+                                .processMessages(messageEnvelope.messages)
+
+                        val messagesToDelete = messageEnvelope.messages - failedMessages
+                        if (messagesToDelete.isNotEmpty()) {
+                            messageEnvelope.sourceQueue.deleteMessages(messagesToDelete)
+                        }
+                    } catch (e: Exception) {
+                        logger.error("exception processing message ${messageEnvelope.messages}", e)
+                    }
+                }
     }
 
     companion object : Logging

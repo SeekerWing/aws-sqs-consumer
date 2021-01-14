@@ -52,9 +52,9 @@ internal class MessageFetcherLauncherTest : CoroutineScope {
             messageFetcher.cancelAndJoin()
         }
 
-        coVerify { channel.send(MessageEnvelope(Message.builder().body("M1").build(), queue)) }
-        coVerify { channel.send(MessageEnvelope(Message.builder().body("M2").build(), queue)) }
-        coVerify { channel.send(MessageEnvelope(Message.builder().body("M3").build(), queue)) }
-        coVerify { channel.send(MessageEnvelope(Message.builder().body("M4").build(), queue)) }
+        coVerify { channel.send(MessageEnvelope(setOf(Message.builder().body("M1").build()), queue)) }
+        coVerify { channel.send(MessageEnvelope(setOf(Message.builder().body("M2").build()), queue)) }
+        coVerify { channel.send(MessageEnvelope(setOf(Message.builder().body("M3").build()), queue)) }
+        coVerify { channel.send(MessageEnvelope(setOf(Message.builder().body("M4").build()), queue)) }
     }
 }
