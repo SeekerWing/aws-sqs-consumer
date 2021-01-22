@@ -25,8 +25,8 @@ internal class SqsQueueConsumerTest {
         coEvery { messageProvider.provideMessages(any<CoroutineScope>()) } returns receiveChannel
         coEvery { messageConsumer.launchConsumer(any<CoroutineScope>(), eq(receiveChannel)) } returns Unit
 
-        sqsQueueConsumer.start()
-
+        val job = sqsQueueConsumer.start()
+        job.join()
         sqsQueueConsumer.stop()
 
         coVerify(exactly = 1) { messageProvider.provideMessages(any<CoroutineScope>()) }
