@@ -12,7 +12,7 @@ buildscript {
 
 plugins {
     kotlin("jvm") version "1.3.71"
-    id("io.gitlab.arturbosch.detekt") version "1.15.0"
+    id("io.gitlab.arturbosch.detekt") version "1.17.1"
     id("org.jlleitschuh.gradle.ktlint") version "9.2.0"
     id("org.jetbrains.dokka") version "0.10.1"
     jacoco
