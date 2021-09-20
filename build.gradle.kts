@@ -14,7 +14,7 @@ plugins {
     kotlin("jvm") version "1.3.71"
     id("io.gitlab.arturbosch.detekt") version "1.15.0"
     id("org.jlleitschuh.gradle.ktlint") version "9.2.0"
-    id("org.jetbrains.dokka") version "0.10.1"
+    id("org.jetbrains.dokka") version "1.5.30"
     jacoco
     id("com.jfrog.bintray") version "1.8.5"
     `maven-publish`
