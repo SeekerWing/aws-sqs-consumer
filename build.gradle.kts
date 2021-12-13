@@ -35,7 +35,7 @@ dependencies {
     implementation("software.amazon.awssdk:sqs:2.15.57")
     implementation("org.apache.logging.log4j:log4j-api-kotlin:1.0.0")
     implementation("org.apache.logging.log4j:log4j-api:2.14.0")
-    implementation("org.apache.logging.log4j:log4j-core:2.14.0")
+    implementation("org.apache.logging.log4j:log4j-core:2.15.0")
 
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3-native-mt")
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
